@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Program · 24 Weeks</title>
+
+<!-- PWA / iOS install hooks -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Program">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<meta name="description" content="24-week hypertrophy program. Built for muscle mass without sacrificing boxing performance.">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --paper: #fafaf7;
+    --rule: #d8d4cc;
+    --muted: #6b6b6b;
+    --accent: #c1121f;
+    --accent-soft: #fbe9eb;
+    --upper: #1d3557;
+    --lower: #2a6f4f;
+    --warning: #b45309;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.55;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    /* iOS safe-area handling for standalone (notch) */
+    padding-top: env(safe-area-inset-top, 0);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    padding-left: env(safe-area-inset-left, 0);
+    padding-right: env(safe-area-inset-right, 0);
+    overscroll-behavior-y: contain;
+  }
+  .container { max-width: 880px; margin: 0 auto; padding: 48px 32px 96px; }
+
+  /* Install banner — only shows in Safari, hidden in standalone */
+  #install-banner {
+    position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom));
+    background: var(--ink); color: white; padding: 14px 18px;
+    border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    font-size: 14px; line-height: 1.4; z-index: 200;
+    display: none;
+    animation: slideup 0.4s ease-out;
+  }
+  @keyframes slideup { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  #install-banner.visible { display: block; }
+  #install-banner strong { color: white; display: block; margin-bottom: 2px; }
+  #install-banner small { color: #b8b8b8; font-size: 12px; }
+  #install-banner .close {
+    position: absolute; top: 8px; right: 12px;
+    background: none; border: none; color: #b8b8b8;
+    font-size: 18px; cursor: pointer; padding: 4px;
+  }
+  #install-banner .arrow {
+    display: inline-block; vertical-align: middle; margin: 0 4px;
+    font-size: 18px;
+  }
+  /* Hide install banner when running standalone */
+  @media (display-mode: standalone) { #install-banner { display: none !important; } }
+
+  /* Hero */
+  .hero { border-bottom: 2px solid var(--ink); padding-bottom: 32px; margin-bottom: 48px; }
+  .eyebrow {
+    text-transform: uppercase; letter-spacing: 0.18em; font-size: 11px;
+    font-weight: 700; color: var(--accent); margin-bottom: 8px;
+  }
+  h1 {
+    font-family: "New York", "Times New Roman", Georgia, serif;
+    font-weight: 700; font-size: 48px; line-height: 1.05;
+    letter-spacing: -0.02em; margin-bottom: 16px;
+  }
+  .subtitle { font-size: 18px; color: var(--muted); max-width: 600px; }
+
+  /* Stat row */
+  .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 24px; margin: 32px 0;
+    border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+    padding: 20px 0;
+  }
+  .stat .label {
+    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 4px; font-weight: 600;
+  }
+  .stat .value { font-size: 24px; font-weight: 700; line-height: 1.1; }
+  .stat .unit { font-size: 12px; color: var(--muted); margin-left: 4px; font-weight: 400; }
+
+  /* Section header */
+  h2 {
+    font-family: "New York", "Times New Roman", Georgia, serif;
+    font-weight: 700; font-size: 28px;
+    margin: 64px 0 24px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--ink);
+    letter-spacing: -0.01em;
+  }
+  h3 {
+    font-size: 16px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; margin-bottom: 12px;
+  }
+
+  /* Week schedule grid */
+  .week-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    gap: 8px; margin-bottom: 32px;
+  }
+  .day-cell {
+    background: white; border: 1px solid var(--rule);
+    padding: 14px 10px; text-align: center;
+    border-radius: 4px; min-height: 110px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .day-cell .dow {
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700; margin-bottom: 6px;
+  }
+  .day-cell .session-name { font-size: 13px; font-weight: 700; line-height: 1.25; }
+  .day-cell .location {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted); margin-top: 4px;
+  }
+  .day-cell.lower { background: #eef5f0; border-color: var(--lower); }
+  .day-cell.upper { background: #eaf0f7; border-color: var(--upper); }
+  .day-cell.boxing { background: #fbe9eb; border-color: var(--accent); }
+  .day-cell.rest { background: #f4f4f1; }
+
+  /* Workout card */
+  .workout {
+    background: white; border: 1px solid var(--rule); border-radius: 6px;
+    padding: 28px; margin-bottom: 24px; page-break-inside: avoid;
+  }
+  .workout.lower { border-top: 4px solid var(--lower); }
+  .workout.upper { border-top: 4px solid var(--upper); }
+  .workout.special { border-top: 4px solid var(--accent); background: #fffaf5; }
+
+  .workout-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid var(--rule); padding-bottom: 12px; margin-bottom: 20px;
+  }
+  .workout-title {
+    font-family: "New York", "Times New Roman", Georgia, serif;
+    font-size: 22px; font-weight: 700; letter-spacing: -0.01em;
+  }
+  .workout-meta {
+    font-size: 12px; color: var(--muted); text-align: right;
+  }
+  .workout-meta strong { color: var(--ink); display: block; font-size: 13px; }
+
+  .lifts { list-style: none; counter-reset: lift; }
+  .lift {
+    counter-increment: lift;
+    display: grid; grid-template-columns: 32px 1fr auto;
+    gap: 16px; align-items: baseline;
+    padding: 14px 0; border-bottom: 1px solid #f0ede6;
+  }
+  .lift:last-child { border-bottom: none; }
+  .lift::before {
+    content: counter(lift, decimal-leading-zero);
+    font-size: 11px; color: var(--muted); font-weight: 700;
+    font-variant-numeric: tabular-nums; padding-top: 2px;
+  }
+  .lift-name { font-weight: 600; font-size: 15px; }
+  .lift-detail { font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .lift-prescription {
+    font-size: 14px; font-weight: 700;
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+    color: var(--ink);
+  }
+  .lift-prescription .rir {
+    color: var(--accent); font-weight: 600; margin-left: 6px; font-size: 12px;
+  }
+
+  .tally {
+    margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--rule);
+    font-size: 12px; color: var(--muted); font-style: italic;
+  }
+
+  /* Auto-reg callout */
+  .callout {
+    background: var(--accent-soft); border-left: 4px solid var(--accent);
+    padding: 24px 28px; border-radius: 0 6px 6px 0;
+    margin: 32px 0; page-break-inside: avoid;
+  }
+  .callout h3 { color: var(--accent); margin-bottom: 12px; }
+  .callout ol { margin-left: 20px; margin-top: 8px; }
+  .callout li { margin-bottom: 6px; font-size: 14px; }
+  .decision-tree {
+    display: grid; grid-template-columns: 80px 1fr; gap: 12px;
+    background: white; border: 1px solid var(--rule); border-radius: 4px;
+    padding: 16px; margin-top: 16px;
+  }
+  .decision-tree .pts {
+    font-weight: 700; font-variant-numeric: tabular-nums;
+    color: var(--accent); padding-right: 12px;
+    border-right: 2px solid var(--rule); text-align: center;
+  }
+  .decision-tree .action { font-size: 14px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th { text-align: left; font-size: 11px; text-transform: uppercase;
+       letter-spacing: 0.1em; color: var(--muted); font-weight: 700;
+       border-bottom: 2px solid var(--ink); padding: 10px 12px; }
+  td { padding: 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+
+  /* Nutrition card */
+  .nutrition-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 16px; margin: 20px 0;
+  }
+  .macro {
+    background: white; border: 1px solid var(--rule);
+    padding: 16px; border-radius: 4px;
+  }
+  .macro .name {
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700; margin-bottom: 4px;
+  }
+  .macro .num { font-size: 22px; font-weight: 700; line-height: 1.1; }
+  .macro .note { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* Print styles */
+  @media print {
+    body { background: white; font-size: 11pt; }
+    .container { padding: 0; max-width: 100%; }
+    .no-print { display: none !important; }
+    h1 { font-size: 28pt; }
+    h2 { font-size: 18pt; margin-top: 24pt; page-break-before: auto; }
+    .workout { box-shadow: none; page-break-inside: avoid; margin-bottom: 12pt; }
+    .callout { page-break-inside: avoid; }
+    .week-grid { page-break-inside: avoid; }
+    @page { margin: 0.6in; }
+  }
+
+  /* Mobile */
+  @media (max-width: 640px) {
+    .container { padding: 24px 16px 64px; }
+    h1 { font-size: 32px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .week-grid { grid-template-columns: repeat(2, 1fr); }
+    .nutrition-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Floating actions */
+  .actions {
+    position: fixed; bottom: 24px; right: 24px; z-index: 100;
+    display: flex; gap: 8px;
+  }
+  .btn {
+    background: var(--ink); color: white; border: none;
+    padding: 12px 18px; font-size: 13px; font-weight: 600;
+    border-radius: 999px; cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    font-family: inherit; letter-spacing: 0.02em;
+  }
+  .btn:hover { background: var(--accent); }
+  .day-anchor { scroll-margin-top: 24px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="eyebrow">Hypertrophy Block · 24 Weeks</div>
+    <h1>The Program.</h1>
+    <p class="subtitle">Built for muscle mass without sacrificing boxing performance. Four lift days, three boxing days, four blocks of six weeks.</p>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <div class="label">Starting</div>
+      <div class="value">155<span class="unit">lb</span></div>
+    </div>
+    <div class="stat">
+      <div class="label">Target Gain</div>
+      <div class="value">10–14<span class="unit">lb / 24 wk</span></div>
+    </div>
+    <div class="stat">
+      <div class="label">Lift Days</div>
+      <div class="value">4<span class="unit">/ wk</span></div>
+    </div>
+    <div class="stat">
+      <div class="label">Daily Calories</div>
+      <div class="value">2,450<span class="unit">kcal</span></div>
+    </div>
+  </div>
+
+  <!-- WEEK AT A GLANCE -->
+  <h2>Week at a Glance</h2>
+  <div class="week-grid">
+    <div class="day-cell lower">
+      <div class="dow">Sun</div>
+      <div class="session-name">Lower A<br>Quads</div>
+      <div class="location">Gym</div>
+    </div>
+    <div class="day-cell boxing">
+      <div class="dow">Mon</div>
+      <div class="session-name">Boxing<br>Technique</div>
+      <div class="location">—</div>
+    </div>
+    <div class="day-cell upper">
+      <div class="dow">Tue</div>
+      <div class="session-name">Upper A<br>Push + Pull</div>
+      <div class="location">Apt</div>
+    </div>
+    <div class="day-cell boxing">
+      <div class="dow">Wed</div>
+      <div class="session-name">Boxing<br>Pads / Rounds</div>
+      <div class="location">—</div>
+    </div>
+    <div class="day-cell lower">
+      <div class="dow">Thu</div>
+      <div class="session-name">Lower B<br>Hinge</div>
+      <div class="location">Apt</div>
+    </div>
+    <div class="day-cell upper">
+      <div class="dow">Fri</div>
+      <div class="session-name">Upper B<br>Pull + DB</div>
+      <div class="location">Gym</div>
+    </div>
+    <div class="day-cell boxing">
+      <div class="dow">Sat</div>
+      <div class="session-name">Boxing<br>Sparring</div>
+      <div class="location">—</div>
+    </div>
+  </div>
+
+  <!-- WORKOUTS -->
+  <h2>The Four Sessions</h2>
+
+  <!-- LOWER A -->
+  <article class="workout lower day-anchor" id="lower-a">
+    <div class="workout-header">
+      <div>
+        <div class="workout-title">Lower A — Quad Emphasis</div>
+        <div class="lift-detail">Sunday · Upstairs Gym</div>
+      </div>
+      <div class="workout-meta">
+        <strong>55–65 min</strong>
+        Quads · Hams · Calves · Core
+      </div>
+    </div>
+    <ol class="lifts">
+      <li class="lift">
+        <div>
+          <div class="lift-name">Leg Press</div>
+          <div class="lift-detail">Primary quad driver. Add load when 10 reps clean across all sets.</div>
+        </div>
+        <div class="lift-prescription">4 × 8–10 <span class="rir">RIR 1–2</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">Bulgarian Split Squat</div>
+          <div class="lift-detail">DBs 50–75 lb each. Long stance, knee tracks toes.</div>
+        </div>
+        <div class="lift-prescription">3 × 8–10 / leg <span class="rir">RIR 1</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">Leg Extension</div>
+          <div class="lift-detail">Pause 1 sec at top. Stretched-position bias.</div>
+        </div>
+        <div class="lift-prescription">4 × 12–15 <span class="rir">RIR 0</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">Lying / Seated Leg Curl</div>
+          <div class="lift-detail">Slow eccentric. Hams secondary today; main hinge work Thursday.</div>
+        </div>
+        <div class="lift-prescription">4 × 10–12 <span class="rir">RIR 1</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">Standing Calf Raise</div>
+          <div class="lift-detail">Full ROM, pause stretch.</div>
+        </div>
+        <div class="lift-prescription">4 × 12–15 <span class="rir">RIR 0</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">Hanging Leg Raise</div>
+          <div class="lift-detail">Strict, no swing.</div>
+        </div>
+        <div class="lift-prescription">3 × AMRAP <span class="rir">RIR 0</span></div>
+      </li>
+    </ol>
+    <div class="tally">Weekly tally contribution → Quads 11 · Hams 4 · Calves 4 · Core 3</div>
+  </article>
+
+  <!-- UPPER A -->
+  <article class="workout upper day-anchor" id="upper-a">
+    <div class="workout-header">
+      <div>
+        <div class="workout-title">Upper A — BB Push + Ring Pull</div>
+        <div class="lift-detail">Tuesday · Apartment</div>
+      </div>
+      <div class="workout-meta">
+        <strong>60–70 min</strong>
+        Chest · Back · Biceps · Triceps
+      </div>
+    </div>
+    <ol class="lifts">
+      <li class="lift">
+        <div>
+          <div class="lift-name">Barbell Bench Press</div>
+          <div class="lift-detail">Start 135 lb. Add 1.25 lb plates when 8 × 4 sets clean. Pause reps when ≥ 180 lb.</div>
+        </div>
+        <div class="lift-prescription">4 × 6–8 <span class="rir">RIR 1–2</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">Weighted Ring Pull-Up</div>
+          <div class="lift-detail">BW + 10 lb start. Full ROM, chest to rings.</div>
+        </div>
+        <div class="lift-prescription">4 × 6–8 <span class="rir">RIR 1</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">Ring Dip</div>
+          <div class="lift-detail">Bodyweight. Add 18 lb KB in feet when easy.</div>
+        </div>
+        <div class="lift-prescription">3 × 8–12 <span class="rir">RIR 1</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">Single-Arm KB Row</div>
+          <div class="lift-detail">72 lb KB. 3-sec eccentric. Alternating arms.</div>
+        </div>
+        <div class="lift-prescription">3 × 10–12 / arm <span class="rir">RIR 1</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">Spider Curl on Rings</div>
+          <div class="lift-detail">Body angled, rings low. Squeeze hard at top.</div>
+        </div>
+        <div class="lift-prescription">4 × 10–12 <span class="rir">RIR 0</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">Ring Skull-Crusher</div>
+          <div class="lift-detail">Body angled. Lower forehead behind head, drive up.</div>
+        </div>
+        <div class="lift-prescription">3 × 12–15 <span class="rir">RIR 0</span></div>
+      </li>
+    </ol>
+    <div class="tally">Weekly tally contribution → Chest 7 · Back 7 · Biceps 4 · Triceps 6</div>
+  </article>
+
+  <!-- LOWER B -->
+  <article class="workout lower day-anchor" id="lower-b">
+    <div class="workout-header">
+      <div>
+        <div class="workout-title">Lower B — Hinge Emphasis</div>
+        <div class="lift-detail">Thursday · Apartment</div>
+      </div>
+      <div class="workout-meta">
+        <strong>50–60 min</strong>
+        Hams · Glutes · Calves · Core
+      </div>
+    </div>
+    <ol class="lifts">
+      <li class="lift">
+        <div>
+          <div class="lift-name">Romanian Deadlift</div>
+          <div class="lift-detail">3-sec eccentric from week 1. Bar caps at 222.5 lb — tempo carries the load.</div>
+        </div>
+        <div class="lift-prescription">4 × 8–10 <span class="rir">RIR 2</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">Barbell Hip Thrust</div>
+          <div class="lift-detail">Couch + folded towel pad. Pause 1 sec at top.</div>
+        </div>
+        <div class="lift-prescription">3 × 10–12 <span class="rir">RIR 1</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">Single-Leg KB RDL</div>
+          <div class="lift-detail">72 lb KB, opposite hand. Hips square.</div>
+        </div>
+        <div class="lift-prescription">3 × 8–10 / leg <span class="rir">RIR 1</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">KB Swing</div>
+          <div class="lift-detail">72 lb hardstyle. Hip-hinge driven, not squat-driven. 2-min rest.</div>
+        </div>
+        <div class="lift-prescription">4 × 10 <span class="rir">RIR 2</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">Seated Calf Raise</div>
+          <div class="lift-detail">KB on knees, toes off plate. Burns intentional.</div>
+        </div>
+        <div class="lift-prescription">3 × 15–20 <span class="rir">RIR 0</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">Pallof Press</div>
+          <div class="lift-detail">Rings, anti-rotation. Hold 2 sec at full extension.</div>
+        </div>
+        <div class="lift-prescription">3 × 10 / side <span class="rir">RIR 1</span></div>
+      </li>
+    </ol>
+    <div class="tally">Weekly tally contribution → Hams 7 · Glutes 4 · Calves 3 · Core 3</div>
+  </article>
+
+  <!-- UPPER B -->
+  <article class="workout upper day-anchor" id="upper-b">
+    <div class="workout-header">
+      <div>
+        <div class="workout-title">Upper B — Pulldown + DB + Cable</div>
+        <div class="lift-detail">Friday · Upstairs Gym</div>
+      </div>
+      <div class="workout-meta">
+        <strong>60–70 min</strong>
+        Back · Chest · Shoulders · Arms
+      </div>
+    </div>
+    <ol class="lifts">
+      <li class="lift">
+        <div>
+          <div class="lift-name">Lat Pulldown</div>
+          <div class="lift-detail">Wide grip. 1-sec pause at chest. Full stretch overhead.</div>
+        </div>
+        <div class="lift-prescription">4 × 8–12 <span class="rir">RIR 1</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">Incline DB Press</div>
+          <div class="lift-detail">30° bench. DBs to 75 lb. Touch chest each rep.</div>
+        </div>
+        <div class="lift-prescription">4 × 8–10 <span class="rir">RIR 1</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">Cable Fly</div>
+          <div class="lift-detail">Mid-chest height. Slight forward lean. Stretch at bottom.</div>
+        </div>
+        <div class="lift-prescription">4 × 10–12 <span class="rir">RIR 0</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">Seated DB Overhead Press</div>
+          <div class="lift-detail">Back supported. Press to lockout, no soft elbow.</div>
+        </div>
+        <div class="lift-prescription">3 × 8–10 <span class="rir">RIR 1</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">DB Hammer Curl</div>
+          <div class="lift-detail">Palms in. Brachialis bias.</div>
+        </div>
+        <div class="lift-prescription">4 × 10–12 <span class="rir">RIR 0</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">Cable Triceps Pushdown</div>
+          <div class="lift-detail">Rope or straight bar. Squeeze lockout.</div>
+        </div>
+        <div class="lift-prescription">3 × 12–15 <span class="rir">RIR 0</span></div>
+      </li>
+      <li class="lift">
+        <div>
+          <div class="lift-name">Cable Lateral Raise</div>
+          <div class="lift-detail">Low pulley, single-arm. Lead with elbow.</div>
+        </div>
+        <div class="lift-prescription">3 × 12–15 <span class="rir">RIR 0</span></div>
+      </li>
+    </ol>
+    <div class="tally">Weekly tally contribution → Back 4 · Chest 8 · Shoulders 6 · Biceps 4 · Triceps 3</div>
+  </article>
+
+  <!-- AUTO-REGULATION -->
+  <h2>Auto-Regulation — Run Every Morning</h2>
+  <div class="callout">
+    <h3>The 5-Question Check</h3>
+    <p style="font-size: 14px; margin-bottom: 12px;">Each <strong>YES</strong> = 1 point. Run before every lift session.</p>
+    <ol>
+      <li>Slept &lt; 6 hrs last night?</li>
+      <li>Resting HR &gt; 7 bpm above baseline (Whoop)?</li>
+      <li>Sparred or hard-contact boxing in last 24 hrs?</li>
+      <li>Joint pain at end-range during warm-up (lead shoulder, hip, knee)?</li>
+      <li>Subjective energy ≤ 4/10?</li>
+    </ol>
+
+    <div class="decision-tree">
+      <div class="pts">0–1</div><div class="action"><strong>Train as planned.</strong> Standard session, push for progression.</div>
+      <div class="pts">2</div><div class="action"><strong>Train with cap.</strong> Top sets at RIR 2 minimum. No PRs today.</div>
+      <div class="pts">3</div><div class="action"><strong>Reduce.</strong> Cut top-set load by 30% OR working sets by 1. Keep movement.</div>
+      <div class="pts">4–5</div><div class="action"><strong>Skip the lift.</strong> 20 min mobility + ring work. This rule protects your boxing.</div>
+    </div>
+  </div>
+
+  <!-- BOXING INTEGRATION -->
+  <h2>Boxing Integration</h2>
+  <table>
+    <thead>
+      <tr><th>Boxing Activity</th><th>Lifting Risk</th><th>Rule</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Sparring</td><td>Highest</td><td>No heavy upper push within 24 hrs. No quad day within 48 hrs prior.</td></tr>
+      <tr><td>Pad Work / Mitts</td><td>High</td><td>No heavy bench/OHP within 18 hrs.</td></tr>
+      <tr><td>Bag Rounds</td><td>Medium</td><td>OK same day; avoid same-day heavy upper.</td></tr>
+      <tr><td>Footwork / Shadowbox</td><td>Low</td><td>Compatible with anything except quad day.</td></tr>
+      <tr><td>Conditioning Runs</td><td>Low–Medium</td><td>Compatible. Watch leg soreness.</td></tr>
+      <tr><td>Coaching (holding pads)</td><td>Medium</td><td>If &gt; 4 rounds, skip same-day heavy press.</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size: 13px; color: var(--muted); margin-top: 8px;"><strong>Schedule shifts?</strong> Identify your sparring day → place quad-heavy lower 5+ days before, hinge lower 48 hrs before, upper days fill the rest.</p>
+
+  <!-- BLOCKS -->
+  <h2>The 24-Week Roadmap</h2>
+  <table>
+    <thead>
+      <tr><th>Block</th><th>Weeks</th><th>Phase</th><th>Focus</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>1</strong></td><td>1–6</td><td>Accumulation</td><td>Build to MAV across all muscles. Deload Wk 6.</td></tr>
+      <tr><td><strong>2</strong></td><td>7–12</td><td>Intensification</td><td>Drive load on compounds. Hold volume. Deload Wk 12.</td></tr>
+      <tr><td><strong>3</strong></td><td>13–18</td><td>Chest + Biceps Specialization</td><td>Add Wed gym pump day. Priority muscles to MRV.</td></tr>
+      <tr><td><strong>4</strong></td><td>19–24</td><td>Quad Specialization</td><td>Add 2nd quad day. Chest/biceps drop to maintenance.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- DELOAD -->
+  <h2>Deload Weeks (6 · 12 · 18 · 24)</h2>
+  <ul style="list-style: none; padding-left: 0;">
+    <li style="padding: 8px 0; border-bottom: 1px solid var(--rule);"><strong>Sets:</strong> 50% of last week's volume.</li>
+    <li style="padding: 8px 0; border-bottom: 1px solid var(--rule);"><strong>Load:</strong> 70% of last week's working weight.</li>
+    <li style="padding: 8px 0; border-bottom: 1px solid var(--rule);"><strong>RIR:</strong> 4–5 across all sets. Should feel easy.</li>
+    <li style="padding: 8px 0; border-bottom: 1px solid var(--rule);"><strong>Boxing:</strong> Hold normal training. Skip sparring if optional.</li>
+    <li style="padding: 8px 0;"><strong>Nutrition:</strong> Hold maintenance. Deload is not a cut.</li>
+  </ul>
+
+  <!-- NUTRITION -->
+  <h2>Nutrition Floor</h2>
+  <p style="font-size: 14px; color: var(--muted); margin-bottom: 16px;">Whoop TDEE = 2,150 kcal. Surplus target +300 kcal/day.</p>
+  <div class="nutrition-grid">
+    <div class="macro">
+      <div class="name">Total Calories</div>
+      <div class="num">2,400–2,500</div>
+      <div class="note">kcal / day</div>
+    </div>
+    <div class="macro">
+      <div class="name">Protein</div>
+      <div class="num">130–155 g</div>
+      <div class="note">~ 30–40 g × 4 meals</div>
+    </div>
+    <div class="macro">
+      <div class="name">Carbs</div>
+      <div class="num">280–320 g</div>
+      <div class="note">Boxing glycogen — non-negotiable</div>
+    </div>
+    <div class="macro">
+      <div class="name">Fat</div>
+      <div class="num">60–75 g</div>
+      <div class="note">Fill remainder</div>
+    </div>
+  </div>
+  <p style="font-size: 14px; margin-top: 12px;"><strong>Rate of gain:</strong> +0.25 to +0.5 lb per week. Below 0.25 → +200 kcal. Above 0.75 → −150 kcal.</p>
+
+  <!-- SOURCES -->
+  <h2>Why It Works (Briefly)</h2>
+  <p style="font-size: 14px; max-width: 640px;">Volume landmarks (10–20 sets/muscle/week) from <em>Schoenfeld 2017</em> meta. Frequency 2× /muscle from <em>Schoenfeld, Grgic, Krieger 2019</em>. Protein 0.8 g/lb floor from <em>Morton 2018</em>. Surplus rate from <em>Iraki/Helms 2019</em>. RIR autoregulation from <em>Helms 2018</em> + MASS Research Review. Block periodization with specialization phases from Renaissance Periodization MV/MEV/MAV/MRV framework.</p>
+
+</div>
+
+<div class="actions no-print">
+  <button class="btn" onclick="window.print()">Print / Save PDF</button>
+</div>
+
+<!-- Install banner: shown only in Safari (iOS) when not yet installed -->
+<div id="install-banner">
+  <button class="close" aria-label="Close" onclick="dismissInstall()">×</button>
+  <strong>Install on Home Screen</strong>
+  <small>Tap <span class="arrow">⬆︎</span> Share, then <strong style="display:inline">Add to Home Screen</strong></small>
+</div>
+
+<script>
+  // Detect iOS Safari (not Chrome on iOS, not standalone-already)
+  (function() {
+    const ua = navigator.userAgent;
+    const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+    const isStandalone = window.navigator.standalone === true ||
+                         window.matchMedia('(display-mode: standalone)').matches;
+    const isSafari = isIOS && /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua);
+    const dismissed = localStorage.getItem('install-dismissed');
+
+    if (isSafari && !isStandalone && !dismissed) {
+      // Show banner after 2 sec so user sees content first
+      setTimeout(() => {
+        document.getElementById('install-banner').classList.add('visible');
+      }, 1500);
+    }
+
+    // Also hide print button when running as installed PWA
+    if (isStandalone) {
+      const actions = document.querySelector('.actions');
+      if (actions) actions.style.display = 'none';
+    }
+  })();
+
+  function dismissInstall() {
+    localStorage.setItem('install-dismissed', '1');
+    document.getElementById('install-banner').classList.remove('visible');
+  }
+</script>
+
+</body>
+</html>
