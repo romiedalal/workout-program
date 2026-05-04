@@ -121,6 +121,24 @@
   .bw-updated-row { font-size: 11px; color: var(--muted); margin-top: -10px; margin-bottom: 16px; padding-left: 16px; }
   .bw-updated-row:empty { display: none; }
 
+  /* Cardio cards on TODAY */
+  .cardio-card {
+    background: white; border: 1px solid var(--rule);
+    border-radius: 14px; padding: 16px; margin-bottom: 12px;
+  }
+  .cardio-card.cardio-z2 { border-left: 4px solid #2a6f4f; }
+  .cardio-card.cardio-tempo { border-left: 4px solid var(--accent); }
+  .cardio-tag {
+    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700; margin-bottom: 4px;
+  }
+  .cardio-name {
+    font-family: "New York", Georgia, serif;
+    font-size: 17px; font-weight: 700; margin-bottom: 4px;
+  }
+  .cardio-detail { font-size: 13px; color: var(--ink); margin-bottom: 4px; }
+  .cardio-spec { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
   /* Phase tracker card */
   .phase-card {
     background: white; border: 1px solid var(--rule);
@@ -542,6 +560,21 @@
     <!-- Today's session (auto-rotated) -->
     <h2 style="margin-top: 24px;">Today's session</h2>
     <div id="today-session"></div>
+
+    <!-- This week's cardio (always visible — user picks when) -->
+    <h2 style="margin-top: 24px;">This week's cardio</h2>
+    <div class="cardio-card cardio-z2">
+      <div class="cardio-tag">RUN #1 · ZONE 2 · 1× / WK</div>
+      <div class="cardio-name">Easy aerobic · 30–40 min</div>
+      <div class="cardio-detail">Road preferred · HR 130–145 · RPE 4/10 · conversational pace</div>
+      <div class="cardio-spec">Treadmill alt: 5.0–5.5 mph @ 1% incline (or walk-jog 4.0/5.0 alternating)</div>
+    </div>
+    <div class="cardio-card cardio-tempo">
+      <div class="cardio-tag">RUN #2 · TEMPO · WK <span id="tempo-week">1</span></div>
+      <div class="cardio-name" id="tempo-headline">Tempo intervals · ~25 min</div>
+      <div class="cardio-detail">HR 150–165 · RPE 7/10 · 2–3 word phrases only</div>
+      <div class="cardio-spec" id="tempo-spec">Treadmill weeks 1–6, then road. 5-min cool-down after at 3.5 mph.</div>
+    </div>
 
     <!-- Daily macros (from diet log) -->
     <h2>Today's macros</h2>
@@ -980,6 +1013,52 @@
       <strong>Cut daily total:</strong> 174 g protein · 195 g carbs · 64 g fat · <strong>1,970 kcal</strong> ≈ ~−300 kcal/day deficit. Aim BW −0.5 to −1.0 lb/wk over the 12-week phase.<br>
       <strong>If BW drops &gt; 1.2 lb/wk for 2 wks:</strong> too aggressive — add 100 g cooked rice to meal 2 (+130 kcal). <strong>If BW flat &gt; 10 days:</strong> drop the cottage cheese to ½ cup (saves 110 kcal).
     </p>
+
+    <h2 style="margin-top: 32px;">Refeeds, diet breaks &amp; "cheat meals"</h2>
+    <div class="card muted" style="font-size: 13px; line-height: 1.6;">
+      <p><strong style="color: var(--accent);">Skip "eat whatever" cheat meals.</strong> They're not science-supported. One 2,500 kcal meal can erase a week's deficit. Instead use the two protocols below.</p>
+    </div>
+
+    <h3 style="margin-top: 16px;">Weekly refeed (recommended every Sat or Sun)</h3>
+    <div class="meal" style="border-left: 4px solid #2a6f4f;">
+      <div class="meal-head">
+        <div class="meal-name">Refeed day</div>
+        <div class="meal-macros">~2,150 kcal · 175p / 280c / 60f</div>
+      </div>
+      <p style="font-size: 13px; color: var(--muted); margin-top: 6px;">Same 4 meals, bumped portions:</p>
+      <ul style="font-size: 13px; line-height: 1.6; margin: 6px 0 0 18px;">
+        <li>Meal 1: + add organic whole milk to oats (+150 kcal · 8p / 12c / 8f) and full banana</li>
+        <li>Meal 2: rice up to 280 g (1.5 cup) again — back to bulk version</li>
+        <li>Meal 3: full 21 g honey + optional granola 30 g</li>
+        <li>Meal 4: bigger sweet potato (200 g) + 1 tsp olive oil drizzle</li>
+      </ul>
+      <p style="font-size: 12px; color: var(--muted); margin-top: 6px;">
+        <strong>Why:</strong> restores muscle glycogen, briefly elevates leptin, restores training performance, prevents psychological burnout.<br>
+        <strong>Source:</strong> Trexler 2019 (MASS Review) · Helms / 3DMJ standard practice.
+      </p>
+    </div>
+
+    <h3 style="margin-top: 16px;">Diet break (week 6 of cut)</h3>
+    <div class="meal" style="border-left: 4px solid #1d3557;">
+      <div class="meal-head">
+        <div class="meal-name">Mid-cut diet break</div>
+        <div class="meal-macros">7 days at maintenance · ~2,150 kcal/day</div>
+      </div>
+      <p style="font-size: 13px; color: var(--muted); margin-top: 6px;">
+        On week 6 (Day 36–42 of cut), switch the Phase to <strong>Maintenance</strong> for the full week. Eat the bulk-version portions. Then resume cut on Day 43.
+      </p>
+      <p style="font-size: 12px; color: var(--muted); margin-top: 6px;">
+        <strong>Why:</strong> intermittent dieting beats continuous dieting for fat loss + muscle preservation. Your metabolism adapts down during cuts; a 7-day reset reverses some of that.<br>
+        <strong>Source:</strong> Byrne 2018 (MATADOR study, <em>Int J Obes</em>) · Helms 2014.
+      </p>
+    </div>
+
+    <h3 style="margin-top: 16px;">Off-plan social meals</h3>
+    <div class="card muted" style="font-size: 13px; line-height: 1.6;">
+      <p><strong>Going out for a meal? It's fine.</strong> Eat lighter earlier in the day so you've banked the kcal. Log it in Carbon honestly. Cap the off-plan addition at +800 kcal beyond your daily target.</p>
+      <p style="margin-top: 6px;"><strong>Don't compound:</strong> dinner out → dessert → drinks → second-helpings is the pattern that adds 2,000+ kcal. Pick one off-plan element, not all four.</p>
+      <p style="margin-top: 6px;"><strong>Aragon's rule of thumb:</strong> 80% adherence to your plan is what matters. The other 20% can be flexible if you hit your weekly average.</p>
+    </div>
 
     <h2>Supplement stack</h2>
     <div class="card muted">
@@ -1477,6 +1556,38 @@
     const today = new Date(); today.setHours(0,0,0,0);
     return Math.max(1, Math.floor((today - start) / 86400000) + 1);
   }
+  function currentTrainingWeek() {
+    const phase = localStorage.getItem(PHASE_KEY) || 'cut';
+    const start = getPhaseStartDate(phase);
+    return Math.ceil(daysIntoPhase(start) / 7);
+  }
+
+  // ───────── Tempo run progression by week ─────────
+  const TEMPO_PROGRESSION = [
+    { fromWeek: 1,  speed: 6.5, sets: 4, dur: 3, rest: 60, sustained: 0 },
+    { fromWeek: 3,  speed: 6.7, sets: 5, dur: 4, rest: 90, sustained: 0 },
+    { fromWeek: 6,  speed: 7.0, sets: 4, dur: 5, rest: 60, sustained: 0 },
+    { fromWeek: 9,  speed: 7.0, sets: 0, dur: 0, rest: 0,  sustained: 15 },
+    { fromWeek: 11, speed: 7.2, sets: 0, dur: 0, rest: 0,  sustained: 18 },
+    { fromWeek: 12, speed: 7.5, sets: 0, dur: 0, rest: 0,  sustained: 22 },
+  ];
+  function renderTempo() {
+    const week = currentTrainingWeek();
+    document.getElementById('tempo-week').textContent = week;
+    const spec = TEMPO_PROGRESSION.slice().reverse().find(s => s.fromWeek <= week) || TEMPO_PROGRESSION[0];
+    if (spec.sustained) {
+      document.getElementById('tempo-headline').textContent =
+        `Sustained tempo · ${spec.sustained} min`;
+      document.getElementById('tempo-spec').textContent =
+        `Treadmill: ${spec.speed} mph @ 1% incline · 1 × ${spec.sustained} min · 5-min cool-down at 3.5 mph`;
+    } else {
+      document.getElementById('tempo-headline').textContent =
+        `Tempo intervals · ${spec.sets} × ${spec.dur} min`;
+      document.getElementById('tempo-spec').textContent =
+        `Treadmill: ${spec.speed} mph @ 1% incline · ${spec.sets} × ${spec.dur} min · ${spec.rest}s easy jog at 4.0 mph between sets`;
+    }
+  }
+  renderTempo();
   function loadPhase() {
     const phase = localStorage.getItem(PHASE_KEY);
     const nameEl = document.getElementById('phase-name');
