@@ -5,7 +5,7 @@
     "f": 65,
     "kcal": 2450
   },
-  "updated_at": "2026-05-03T22:43:19Z",
+  "updated_at": "2026-05-03T22:44:59Z",
   "days": {
     "2026-05-03": {
       "meals": [
@@ -82,13 +82,67 @@
           },
           "transcript": "had eight ounces of chicken thigh, one and a half cups of jasmine rice, one cup broccoli with soy sauce and sesame oil. plus two scoops of perfect amino",
           "notes": "assumed 1 tbsp soy sauce and 1 tsp sesame oil as dressing for broccoli"
+        },
+        {
+          "id": "2026-05-03-02",
+          "logged_at": "2026-05-03T22:44:59",
+          "items": [
+            {
+              "name": "Eggs, large, scrambled",
+              "amount": "2 large",
+              "macros": {
+                "p": 12,
+                "c": 1,
+                "f": 11,
+                "kcal": 155
+              }
+            },
+            {
+              "name": "Rolled oats, cooked",
+              "amount": "1 cup",
+              "macros": {
+                "p": 5,
+                "c": 27,
+                "f": 3,
+                "kcal": 150
+              }
+            },
+            {
+              "name": "Banana, medium",
+              "amount": "\u00bd",
+              "macros": {
+                "p": 1,
+                "c": 14,
+                "f": 0,
+                "kcal": 55
+              }
+            },
+            {
+              "name": "Peanut butter, natural",
+              "amount": "1 tbsp",
+              "macros": {
+                "p": 4,
+                "c": 3,
+                "f": 8,
+                "kcal": 95
+              }
+            }
+          ],
+          "totals": {
+            "p": 22,
+            "c": 45,
+            "f": 22,
+            "kcal": 455
+          },
+          "transcript": "I had two scrambled eggs, one cup of oatmeal, half a banana, and a tablespoon of peanut butter for breakfast.",
+          "notes": "Assumed 1 cup oatmeal was cooked, not dry. Scrambled eggs include minimal cooking fat."
         }
       ],
       "totals": {
-        "p": 61,
-        "c": 75,
-        "f": 25,
-        "kcal": 835
+        "p": 83,
+        "c": 120,
+        "f": 47,
+        "kcal": 1290
       }
     }
   }
