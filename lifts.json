@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-05-03T22:00:51Z",
+  "updated_at": "2026-05-04T09:00:11Z",
   "bodyweight": {
-    "current": 156.0,
-    "current_date": "2026-05-03",
-    "trend_7d": 1.0,
-    "samples": 3
+    "current": 157.0,
+    "current_date": "2026-05-04",
+    "trend_7d": 2.0,
+    "samples": 4
   },
   "lifts": {
     "Bench Press": {
