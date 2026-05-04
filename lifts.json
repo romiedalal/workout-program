@@ -1,0 +1,462 @@
+{
+  "updated_at": "2026-05-03T21:56:49Z",
+  "bodyweight": {
+    "current": 156.0,
+    "current_date": "2026-04-29",
+    "trend_7d": 1.0,
+    "samples": 2
+  },
+  "lifts": {
+    "Bench Press": {
+      "session": "Upper A",
+      "rep_range": [
+        6,
+        8
+      ],
+      "rir_target": [
+        1,
+        2
+      ],
+      "history_count": 3,
+      "next_target": "Hold 135 lb. Match or beat 5 reps top set RIR 1-2.",
+      "last_session": {
+        "date": "2026-04-29",
+        "top_set": "135 \u00d7 5/5/5/4",
+        "rir": 2,
+        "sets": [
+          [
+            135.0,
+            5
+          ],
+          [
+            135.0,
+            5
+          ],
+          [
+            135.0,
+            5
+          ],
+          [
+            135.0,
+            4
+          ]
+        ]
+      }
+    },
+    "Weighted Ring Pull-Up": {
+      "session": "Upper A",
+      "rep_range": [
+        6,
+        8
+      ],
+      "rir_target": [
+        1,
+        1
+      ],
+      "history_count": 3,
+      "next_target": "Hold 10 lb. Aim 9+ reps top set RIR 1.",
+      "last_session": {
+        "date": "2026-04-29",
+        "top_set": "10 \u00d7 8/7/7/6",
+        "rir": 1,
+        "sets": [
+          [
+            10.0,
+            8
+          ],
+          [
+            10.0,
+            7
+          ],
+          [
+            10.0,
+            7
+          ],
+          [
+            10.0,
+            6
+          ]
+        ]
+      }
+    },
+    "Ring Dip": {
+      "session": "Upper A",
+      "rep_range": [
+        8,
+        12
+      ],
+      "rir_target": [
+        1,
+        1
+      ],
+      "history_count": 3,
+      "next_target": "Hold 0 lb. Aim 13+ reps top set RIR 1.",
+      "last_session": {
+        "date": "2026-04-29",
+        "top_set": "BW \u00d7 12/11/10",
+        "rir": 1,
+        "sets": [
+          [
+            0.0,
+            12
+          ],
+          [
+            0.0,
+            11
+          ],
+          [
+            0.0,
+            10
+          ]
+        ]
+      }
+    },
+    "Single-Arm KB Row": {
+      "session": "Upper A",
+      "rep_range": [
+        10,
+        12
+      ],
+      "rir_target": [
+        1,
+        1
+      ],
+      "history_count": 2,
+      "next_target": "Hold 72 lb. Aim 13+ reps top set RIR 1.",
+      "last_session": {
+        "date": "2026-04-28",
+        "top_set": "72 \u00d7 12/12/11",
+        "rir": 1,
+        "sets": [
+          [
+            72.0,
+            12
+          ],
+          [
+            72.0,
+            12
+          ],
+          [
+            72.0,
+            11
+          ]
+        ]
+      }
+    },
+    "Spider Curl Rings": {
+      "session": "Upper A",
+      "rep_range": [
+        10,
+        12
+      ],
+      "rir_target": [
+        0,
+        0
+      ],
+      "history_count": 1,
+      "next_target": "Hold 0 lb. Aim 13+ reps top set RIR 0.",
+      "last_session": {
+        "date": "2026-04-28",
+        "top_set": "BW \u00d7 12/12/11/10",
+        "rir": 0,
+        "sets": [
+          [
+            0.0,
+            12
+          ],
+          [
+            0.0,
+            12
+          ],
+          [
+            0.0,
+            11
+          ],
+          [
+            0.0,
+            10
+          ]
+        ]
+      }
+    },
+    "Ring Skull-Crusher": {
+      "session": "Upper A",
+      "rep_range": [
+        12,
+        15
+      ],
+      "rir_target": [
+        0,
+        0
+      ],
+      "history_count": 1,
+      "next_target": "Hold 0 lb. Aim 16+ reps top set RIR 0.",
+      "last_session": {
+        "date": "2026-04-28",
+        "top_set": "BW \u00d7 15/14/13",
+        "rir": 0,
+        "sets": [
+          [
+            0.0,
+            15
+          ],
+          [
+            0.0,
+            14
+          ],
+          [
+            0.0,
+            13
+          ]
+        ]
+      }
+    },
+    "Leg Press": {
+      "session": "Lower A",
+      "rep_range": [
+        8,
+        10
+      ],
+      "rir_target": [
+        1,
+        2
+      ],
+      "history_count": 0,
+      "next_target": "Start at conservative weight \u00d7 8 reps. Establish baseline."
+    },
+    "Bulgarian Split Squat": {
+      "session": "Lower A",
+      "rep_range": [
+        8,
+        10
+      ],
+      "rir_target": [
+        1,
+        1
+      ],
+      "history_count": 0,
+      "next_target": "Start at conservative weight \u00d7 8 reps. Establish baseline."
+    },
+    "Leg Extension": {
+      "session": "Lower A",
+      "rep_range": [
+        12,
+        15
+      ],
+      "rir_target": [
+        0,
+        0
+      ],
+      "history_count": 0,
+      "next_target": "Start at conservative weight \u00d7 12 reps. Establish baseline."
+    },
+    "Leg Curl": {
+      "session": "Lower A",
+      "rep_range": [
+        10,
+        12
+      ],
+      "rir_target": [
+        1,
+        1
+      ],
+      "history_count": 0,
+      "next_target": "Start at conservative weight \u00d7 10 reps. Establish baseline."
+    },
+    "Standing Calf Raise": {
+      "session": "Lower A",
+      "rep_range": [
+        12,
+        15
+      ],
+      "rir_target": [
+        0,
+        0
+      ],
+      "history_count": 0,
+      "next_target": "Start at conservative weight \u00d7 12 reps. Establish baseline."
+    },
+    "Hanging Leg Raise": {
+      "session": "Lower A",
+      "rep_range": [
+        8,
+        99
+      ],
+      "rir_target": [
+        0,
+        0
+      ],
+      "history_count": 0,
+      "next_target": "Start at conservative weight \u00d7 8 reps. Establish baseline."
+    },
+    "Romanian Deadlift": {
+      "session": "Lower B",
+      "rep_range": [
+        8,
+        10
+      ],
+      "rir_target": [
+        2,
+        2
+      ],
+      "history_count": 0,
+      "next_target": "Start at conservative weight \u00d7 8 reps. Establish baseline."
+    },
+    "Barbell Hip Thrust": {
+      "session": "Lower B",
+      "rep_range": [
+        10,
+        12
+      ],
+      "rir_target": [
+        1,
+        1
+      ],
+      "history_count": 0,
+      "next_target": "Start at conservative weight \u00d7 10 reps. Establish baseline."
+    },
+    "Single-Leg KB RDL": {
+      "session": "Lower B",
+      "rep_range": [
+        8,
+        10
+      ],
+      "rir_target": [
+        1,
+        1
+      ],
+      "history_count": 0,
+      "next_target": "Start at conservative weight \u00d7 8 reps. Establish baseline."
+    },
+    "KB Swing": {
+      "session": "Lower B",
+      "rep_range": [
+        10,
+        10
+      ],
+      "rir_target": [
+        2,
+        2
+      ],
+      "history_count": 0,
+      "next_target": "Start at conservative weight \u00d7 10 reps. Establish baseline."
+    },
+    "Seated Calf Raise": {
+      "session": "Lower B",
+      "rep_range": [
+        15,
+        20
+      ],
+      "rir_target": [
+        0,
+        0
+      ],
+      "history_count": 0,
+      "next_target": "Start at conservative weight \u00d7 15 reps. Establish baseline."
+    },
+    "Pallof Press": {
+      "session": "Lower B",
+      "rep_range": [
+        10,
+        10
+      ],
+      "rir_target": [
+        1,
+        1
+      ],
+      "history_count": 0,
+      "next_target": "Start at conservative weight \u00d7 10 reps. Establish baseline."
+    },
+    "Lat Pulldown": {
+      "session": "Upper B",
+      "rep_range": [
+        8,
+        12
+      ],
+      "rir_target": [
+        1,
+        1
+      ],
+      "history_count": 0,
+      "next_target": "Start at conservative weight \u00d7 8 reps. Establish baseline."
+    },
+    "Incline DB Press": {
+      "session": "Upper B",
+      "rep_range": [
+        8,
+        10
+      ],
+      "rir_target": [
+        1,
+        1
+      ],
+      "history_count": 0,
+      "next_target": "Start at conservative weight \u00d7 8 reps. Establish baseline."
+    },
+    "Cable Fly": {
+      "session": "Upper B",
+      "rep_range": [
+        10,
+        12
+      ],
+      "rir_target": [
+        0,
+        0
+      ],
+      "history_count": 0,
+      "next_target": "Start at conservative weight \u00d7 10 reps. Establish baseline."
+    },
+    "Seated DB OHP": {
+      "session": "Upper B",
+      "rep_range": [
+        8,
+        10
+      ],
+      "rir_target": [
+        1,
+        1
+      ],
+      "history_count": 0,
+      "next_target": "Start at conservative weight \u00d7 8 reps. Establish baseline."
+    },
+    "DB Hammer Curl": {
+      "session": "Upper B",
+      "rep_range": [
+        10,
+        12
+      ],
+      "rir_target": [
+        0,
+        0
+      ],
+      "history_count": 0,
+      "next_target": "Start at conservative weight \u00d7 10 reps. Establish baseline."
+    },
+    "Cable Triceps Pushdown": {
+      "session": "Upper B",
+      "rep_range": [
+        12,
+        15
+      ],
+      "rir_target": [
+        0,
+        0
+      ],
+      "history_count": 0,
+      "next_target": "Start at conservative weight \u00d7 12 reps. Establish baseline."
+    },
+    "Cable Lateral Raise": {
+      "session": "Upper B",
+      "rep_range": [
+        12,
+        15
+      ],
+      "rir_target": [
+        0,
+        0
+      ],
+      "history_count": 0,
+      "next_target": "Start at conservative weight \u00d7 12 reps. Establish baseline."
+    }
+  }
+}
