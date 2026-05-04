@@ -1410,6 +1410,11 @@
 
   // ───────── Bodyweight ─────────
   function renderBW(bw) {
+    // localStorage wins — it's more recent than any lifts.json snapshot
+    if ((JSON.parse(localStorage.getItem('bw-history') || '[]')).length) {
+      loadBWLocal();
+      return;
+    }
     if (!bw || bw.current == null) return;
     document.getElementById('bw-current').textContent = bw.current.toFixed(1);
     const trendEl = document.getElementById('bw-trend');
@@ -1423,7 +1428,6 @@
       else trendEl.className = 'trend up';
     }
     if (bw.current_date) document.getElementById('bw-updated').textContent = fmtRelDate(bw.current_date);
-    document.getElementById('bw-strip').hidden = false;
   }
 
   // ───────── Lifts orchestrator ─────────
@@ -1669,43 +1673,63 @@
   bwCancel.addEventListener('click', () => bwOverlay.classList.remove('open'));
   bwOverlay.addEventListener('click', e => { if (e.target === bwOverlay) bwOverlay.classList.remove('open'); });
 
-  bwSave.addEventListener('click', async () => {
+  bwSave.addEventListener('click', () => {
     const val = parseFloat(bwInput.value);
     if (!val || val < 80 || val > 400) {
       bwInput.style.borderColor = 'var(--accent)';
       return;
     }
-    // 1. Update display immediately (optimistic UI)
-    document.getElementById('bw-current').textContent = val.toFixed(1);
-    document.getElementById('bw-updated').textContent = 'just logged · syncing to Mac…';
-
-    // 2. Stash locally (so trend continues even if Mac is offline)
+    // Save to localStorage only — no file export, no share sheet
     const local = JSON.parse(localStorage.getItem('bw-history') || '[]');
-    local.push({ date: new Date().toISOString().slice(0,10), bw: val, ts: Date.now() });
-    localStorage.setItem('bw-history', JSON.stringify(local));
+    // Replace today's entry if exists (allow corrections)
+    const today = new Date().toISOString().slice(0, 10);
+    const filtered = local.filter(r => r.date !== today);
+    filtered.push({ date: today, bw: val, ts: Date.now() });
+    localStorage.setItem('bw-history', JSON.stringify(filtered));
 
-    // 3. Send to Mac via iCloud Drive (JSON file the watcher will route)
-    const payload = { type: 'bodyweight', date: new Date().toISOString().slice(0,10), bw_lb: val, logged_at: new Date().toISOString() };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-    const filename = `bw-${new Date().toISOString().replace(/[:.]/g,'-').slice(0,19)}.json`;
-    const file = new File([blob], filename, { type: 'application/json' });
-
-    let shared = false;
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      try { await navigator.share({ files: [file], title: 'Bodyweight log' }); shared = true; }
-      catch (e) { if (e.name !== 'AbortError') console.error(e); }
-    }
-    if (!shared) {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = filename; a.click();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-    }
+    // Refresh BW strip from localStorage
+    loadBWLocal();
 
     bwInput.value = '';
     bwInput.style.borderColor = '';
     bwOverlay.classList.remove('open');
   });
+
+  function loadBWLocal() {
+    const local = JSON.parse(localStorage.getItem('bw-history') || '[]');
+    if (!local.length) return false;
+    local.sort((a, b) => a.ts - b.ts);
+    const latest = local[local.length - 1];
+    document.getElementById('bw-current').textContent = latest.bw.toFixed(1);
+
+    // 7-day trend
+    const sevenDaysAgo = Date.now() - 7 * 86400000;
+    const olderEntries = local.filter(r => r.ts <= sevenDaysAgo);
+    const past = olderEntries.length ? olderEntries[olderEntries.length - 1] : local[0];
+    const trendEl = document.getElementById('bw-trend');
+    if (past && past.ts !== latest.ts) {
+      const t = latest.bw - past.bw;
+      const sign = t > 0 ? '+' : '';
+      trendEl.textContent = `${sign}${t.toFixed(1)} lb`;
+      if (Math.abs(t) < 0.1) trendEl.className = 'trend flat';
+      else if (t > 1) trendEl.className = 'trend fast';
+      else trendEl.className = 'trend up';
+    } else {
+      trendEl.textContent = 'first log';
+      trendEl.className = 'trend flat';
+    }
+
+    // "X ago" label
+    const minsAgo = Math.floor((Date.now() - latest.ts) / 60000);
+    let ago;
+    if (minsAgo < 1) ago = 'just logged';
+    else if (minsAgo < 60) ago = `${minsAgo}m ago`;
+    else if (minsAgo < 1440) ago = `${Math.floor(minsAgo / 60)}h ago`;
+    else ago = `${Math.floor(minsAgo / 1440)}d ago`;
+    document.getElementById('bw-updated').textContent = ago;
+    return true;
+  }
+  loadBWLocal();
 
   loadBriefing();
   loadLifts();
