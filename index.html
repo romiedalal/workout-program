@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Program · 24 Weeks</title>
 
-<!-- PWA / iOS install hooks -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,7 +14,6 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="manifest" href="manifest.json">
-<meta name="description" content="24-week hypertrophy program. Built for muscle mass without sacrificing boxing performance.">
 <style>
   :root {
     --ink: #0a0a0a;
@@ -26,106 +24,218 @@
     --accent-soft: #fbe9eb;
     --upper: #1d3557;
     --lower: #2a6f4f;
-    --warning: #b45309;
+    --diet:  #b45309;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-    background: var(--paper);
-    color: var(--ink);
-    line-height: 1.55;
-    font-size: 16px;
+    background: var(--paper); color: var(--ink);
+    line-height: 1.55; font-size: 16px;
     -webkit-font-smoothing: antialiased;
-    /* iOS safe-area handling for standalone (notch) */
     padding-top: env(safe-area-inset-top, 0);
-    padding-bottom: env(safe-area-inset-bottom, 0);
     padding-left: env(safe-area-inset-left, 0);
     padding-right: env(safe-area-inset-right, 0);
     overscroll-behavior-y: contain;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
   }
-  .container { max-width: 880px; margin: 0 auto; padding: 48px 32px 96px; }
+  .container { max-width: 720px; margin: 0 auto; padding: 32px 20px 32px; }
+  h1 { font-family: "New York", "Times New Roman", Georgia, serif; font-weight: 700; font-size: 36px; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 8px; }
+  h2 { font-family: "New York", "Times New Roman", Georgia, serif; font-weight: 700; font-size: 24px; margin: 36px 0 16px; padding-bottom: 6px; border-bottom: 1px solid var(--ink); letter-spacing: -0.01em; }
+  h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 10px; color: var(--muted); }
+  p { font-size: 15px; }
+  .eyebrow { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
 
-  /* Install banner — only shows in Safari, hidden in standalone */
-  #install-banner {
-    position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom));
-    background: var(--ink); color: white; padding: 14px 18px;
-    border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-    font-size: 14px; line-height: 1.4; z-index: 200;
-    display: none;
-    animation: slideup 0.4s ease-out;
-  }
-  @keyframes slideup { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-  #install-banner.visible { display: block; }
-  #install-banner strong { color: white; display: block; margin-bottom: 2px; }
-  #install-banner small { color: #b8b8b8; font-size: 12px; }
-  #install-banner .close {
-    position: absolute; top: 8px; right: 12px;
-    background: none; border: none; color: #b8b8b8;
-    font-size: 18px; cursor: pointer; padding: 4px;
-  }
-  #install-banner .arrow {
-    display: inline-block; vertical-align: middle; margin: 0 4px;
-    font-size: 18px;
-  }
-  /* Hide install banner when running standalone */
-  @media (display-mode: standalone) { #install-banner { display: none !important; } }
+  /* Tabs */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadein 0.2s ease-out; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
-  /* Briefing card (Whoop-driven) */
+  .tabbar {
+    position: fixed; left: 0; right: 0;
+    bottom: 0; z-index: 50;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--rule);
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+  }
+  .tabbar button {
+    background: none; border: none; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 4px; padding: 6px 0; color: var(--muted);
+    font-family: inherit; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tabbar button.active { color: var(--ink); }
+  .tabbar svg { width: 22px; height: 22px; }
+
+  /* Briefing */
   .briefing {
     background: var(--ink); color: white;
-    border-radius: 16px; padding: 22px 24px;
-    margin-bottom: 28px;
+    border-radius: 16px; padding: 18px 20px;
+    margin-bottom: 16px;
     font-variant-numeric: tabular-nums;
   }
-  .briefing-header {
-    display: flex; justify-content: space-between; align-items: baseline;
-    margin-bottom: 16px;
-  }
-  .briefing-label {
-    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--accent); font-weight: 700;
-  }
+  .briefing[hidden] { display: none; }
+  .briefing-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+  .briefing-label { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
   .briefing-updated { font-size: 11px; color: #888; }
   .briefing-row { display: flex; justify-content: space-between; }
-  .briefing-hero {
-    align-items: center; padding-bottom: 16px; margin-bottom: 14px;
-    border-bottom: 1px solid #1f1f1f;
-  }
-  .briefing-metric .b-label {
-    font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;
-    color: #888; font-weight: 700; margin-bottom: 4px;
-  }
-  .briefing-hero .b-value { font-size: 36px; font-weight: 700; line-height: 1; }
-  .briefing-hero .b-unit { font-size: 16px; color: #888; margin-left: 2px; font-weight: 400; }
-  .briefing-call {
-    font-size: 14px; font-weight: 600;
-    text-align: right; max-width: 50%; line-height: 1.3;
-  }
+  .briefing-hero { align-items: center; padding-bottom: 14px; margin-bottom: 12px; border-bottom: 1px solid #1f1f1f; }
+  .b-label { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: #888; font-weight: 700; margin-bottom: 4px; }
+  .briefing-hero .b-value { font-size: 30px; font-weight: 700; line-height: 1; }
+  .briefing-hero .b-unit { font-size: 14px; color: #888; margin-left: 2px; font-weight: 400; }
+  .briefing-call { font-size: 13px; font-weight: 600; text-align: right; max-width: 50%; line-height: 1.3; }
   .briefing-call.green  { color: #5ada85; }
   .briefing-call.yellow { color: #f7c948; }
   .briefing-call.orange { color: #f59e0b; }
   .briefing-call.red    { color: #ff5266; }
-  .briefing-secondary { gap: 14px; }
+  .briefing-secondary { gap: 12px; }
   .briefing-secondary .briefing-metric { flex: 1; }
-  .briefing-secondary .b-sub { font-size: 16px; font-weight: 600; }
-  .briefing-empty { font-size: 13px; color: #888; padding-top: 8px; }
-  .briefing-empty a { color: var(--accent); text-decoration: none; }
+  .briefing-secondary .b-sub { font-size: 15px; font-weight: 600; }
+
+  /* BW strip */
+  .bw-strip {
+    background: white; border: 1px solid var(--rule);
+    border-radius: 12px; padding: 14px 16px;
+    margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-variant-numeric: tabular-nums;
+  }
+  .bw-strip[hidden] { display: none; }
+  .bw-strip .label { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .bw-strip .current { font-size: 20px; font-weight: 700; }
+  .bw-strip .trend.up   { color: #245a2a; font-weight: 700; }
+  .bw-strip .trend.flat { color: var(--muted); font-weight: 700; }
+  .bw-strip .trend.fast { color: var(--accent); font-weight: 700; }
+  .bw-strip .updated { font-size: 11px; color: var(--muted); }
+
+  /* Today's session card */
+  .session-card {
+    background: white; border: 1px solid var(--rule);
+    border-radius: 14px; padding: 22px;
+    margin-bottom: 16px;
+  }
+  .session-card.upper { border-top: 4px solid var(--upper); }
+  .session-card.lower { border-top: 4px solid var(--lower); }
+  .session-card-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+  .session-name { font-family: "New York", Georgia, serif; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+  .session-loc { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+  .session-rec-tag {
+    display: inline-block; background: var(--accent); color: white;
+    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 999px; font-weight: 700; margin-bottom: 8px;
+  }
+
+  /* Lift items */
+  .lifts { list-style: none; counter-reset: lift; }
+  .lift {
+    counter-increment: lift;
+    display: grid; grid-template-columns: 24px 1fr auto;
+    gap: 12px; align-items: baseline;
+    padding: 12px 0; border-bottom: 1px solid #f0ede6;
+  }
+  .lift:last-child { border-bottom: none; }
+  .lift::before {
+    content: counter(lift, decimal-leading-zero);
+    font-size: 10px; color: var(--muted); font-weight: 700;
+    font-variant-numeric: tabular-nums; padding-top: 2px;
+  }
+  .lift-name { font-weight: 600; font-size: 15px; }
+  .lift-detail { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .lift-prescription { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .lift-prescription .rir { color: var(--accent); font-weight: 600; margin-left: 4px; font-size: 11px; }
+
+  .lift-history {
+    grid-column: 2 / 4;
+    margin-top: 6px; padding: 8px 10px;
+    background: #f7f4ec; border-radius: 6px;
+    font-size: 12px; line-height: 1.5;
+    border-left: 3px solid var(--ink);
+  }
+  .lift-history .label-tag {
+    font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700; margin-right: 4px;
+  }
+  .lift-history .last-line { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink); }
+  .lift-history .last-meta { color: var(--muted); font-weight: 400; margin-left: 6px; }
+  .lift-history .target-line {
+    color: var(--accent); font-weight: 700;
+    font-variant-numeric: tabular-nums; margin-top: 2px;
+    font-size: 12px;
+  }
+
+  /* Section sub-cards */
+  .card {
+    background: white; border: 1px solid var(--rule);
+    border-radius: 12px; padding: 18px;
+    margin-bottom: 14px;
+  }
+  .card.muted { background: #f7f4ec; }
+  .card-title {
+    font-family: "New York", Georgia, serif; font-size: 18px; font-weight: 700;
+    margin-bottom: 8px; letter-spacing: -0.01em;
+  }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  th { text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 700; border-bottom: 2px solid var(--ink); padding: 8px 10px; }
+  td { padding: 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+
+  /* Macros card */
+  .macros-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .macro-pill {
+    background: white; border: 1px solid var(--rule); padding: 12px;
+    border-radius: 10px; text-align: center;
+  }
+  .macro-pill.protein { border-color: #2a6f4f; }
+  .macro-pill .name { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: 4px; }
+  .macro-pill .val { font-size: 18px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+  .macro-pill .target { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* Meal templates */
+  .meal {
+    background: white; border: 1px solid var(--rule);
+    border-radius: 10px; padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .meal-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .meal-name { font-weight: 700; font-size: 15px; }
+  .meal-macros { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .meal-ing { font-size: 13px; color: var(--muted); }
+
+  /* Accordion */
+  details {
+    background: white; border: 1px solid var(--rule);
+    border-radius: 12px; padding: 14px 18px; margin-bottom: 10px;
+  }
+  details[open] { padding-bottom: 18px; }
+  summary {
+    cursor: pointer; font-weight: 700; font-size: 15px;
+    display: flex; justify-content: space-between; align-items: center;
+    list-style: none;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; font-size: 18px; color: var(--muted); font-weight: 400; }
+  details[open] summary::after { content: "−"; }
 
   /* Recorder FAB + modal */
   .record-fab {
     position: fixed; right: 18px;
-    bottom: calc(24px + env(safe-area-inset-bottom));
-    width: 64px; height: 64px; border-radius: 50%;
+    bottom: calc(96px + env(safe-area-inset-bottom));
+    width: 60px; height: 60px; border-radius: 50%;
     background: var(--accent); color: white; border: none;
     box-shadow: 0 8px 24px rgba(193, 18, 31, 0.45);
     display: flex; align-items: center; justify-content: center;
-    z-index: 150; cursor: pointer;
+    z-index: 60; cursor: pointer;
     transition: transform 0.15s ease;
     -webkit-tap-highlight-color: transparent;
   }
   .record-fab:active { transform: scale(0.92); }
-  .record-fab svg { width: 28px; height: 28px; }
+  .record-fab svg { width: 26px; height: 26px; }
   .record-fab .badge {
     position: absolute; top: -4px; right: -4px;
     background: var(--ink); color: white;
@@ -135,6 +245,7 @@
     border: 2px solid var(--paper);
   }
   .record-fab .badge:empty { display: none; }
+  .record-fab.diet-mode { background: var(--diet); box-shadow: 0 8px 24px rgba(180, 83, 9, 0.45); }
 
   .recorder-overlay {
     position: fixed; inset: 0;
@@ -150,784 +261,388 @@
     padding: 24px 24px calc(24px + env(safe-area-inset-bottom)) 24px;
     animation: slideup 0.3s ease-out;
     max-height: 90vh; overflow-y: auto;
+    position: relative;
   }
-  .recorder-handle {
-    width: 36px; height: 4px; background: var(--rule);
-    border-radius: 2px; margin: 0 auto 16px;
+  @keyframes slideup { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .recorder-handle { width: 36px; height: 4px; background: var(--rule); border-radius: 2px; margin: 0 auto 16px; }
+  .recorder-title { font-family: "New York", Georgia, serif; font-weight: 700; font-size: 22px; margin-bottom: 4px; }
+  .recorder-hint { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+  .recorder-close {
+    position: absolute; top: 16px; right: 16px;
+    background: #f0ede6; border: none; width: 32px; height: 32px;
+    border-radius: 50%; font-size: 20px; line-height: 1; color: var(--muted); cursor: pointer;
   }
-  .recorder-title {
-    font-family: "New York", "Times New Roman", Georgia, serif;
-    font-weight: 700; font-size: 22px; margin-bottom: 4px;
+  .mode-toggle {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+    background: #f0ede6; border-radius: 999px; padding: 4px; margin-bottom: 18px;
   }
-  .recorder-hint { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
-  .recorder-mic-wrapper {
-    display: flex; flex-direction: column; align-items: center;
-    margin: 16px 0 24px;
+  .mode-toggle button {
+    background: none; border: none; padding: 8px; border-radius: 999px;
+    font-family: inherit; font-size: 13px; font-weight: 700; color: var(--muted);
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
+  .mode-toggle button.active { background: white; color: var(--ink); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
   .mic-btn {
-    width: 96px; height: 96px; border-radius: 50%;
+    width: 88px; height: 88px; border-radius: 50%;
     background: var(--accent); color: white;
     border: none; box-shadow: 0 8px 24px rgba(193, 18, 31, 0.35);
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: all 0.2s ease;
+    margin: 8px auto;
   }
-  .mic-btn svg { width: 40px; height: 40px; }
-  .mic-btn.recording {
-    background: var(--ink);
-    animation: pulse 1.2s infinite;
-  }
+  .mic-btn.diet { background: var(--diet); }
+  .mic-btn svg { width: 36px; height: 36px; }
+  .mic-btn.recording { background: var(--ink); animation: pulse 1.2s infinite; }
   .mic-btn.recording svg { display: none; }
   .mic-btn.recording::after {
-    content: ""; width: 28px; height: 28px;
+    content: ""; width: 24px; height: 24px;
     background: var(--accent); border-radius: 4px;
   }
   @keyframes pulse {
     0%,100% { box-shadow: 0 8px 24px rgba(10, 10, 10, 0.4); }
     50% { box-shadow: 0 8px 24px rgba(193, 18, 31, 0.6), 0 0 0 12px rgba(193, 18, 31, 0.15); }
   }
-  .timer {
-    font-variant-numeric: tabular-nums; font-size: 32px;
-    font-weight: 700; color: var(--ink);
-    margin-top: 16px; letter-spacing: 0.04em;
-  }
+  .timer { font-variant-numeric: tabular-nums; font-size: 26px; font-weight: 700; text-align: center; margin-top: 8px; }
   .timer.idle { color: var(--muted); }
-
-  .recorder-preview {
-    background: #f8f6f0; border-radius: 12px;
-    padding: 16px; margin-bottom: 16px;
-  }
+  .recorder-mic-wrapper { text-align: center; margin: 8px 0 18px; }
+  .recorder-preview { background: #f7f4ec; border-radius: 12px; padding: 14px; margin-bottom: 14px; }
   .recorder-preview audio { width: 100%; }
   .recorder-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .recorder-actions button {
-    padding: 14px; border-radius: 12px; border: none;
-    font-size: 15px; font-weight: 600; cursor: pointer;
-    font-family: inherit;
-  }
+  .recorder-actions button { padding: 14px; border-radius: 10px; border: none; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; }
   .btn-primary { background: var(--ink); color: white; }
   .btn-secondary { background: #f0ede6; color: var(--ink); }
   .btn-primary:active, .btn-secondary:active { transform: scale(0.97); }
+  .perm-error { background: #fbe9eb; border: 1px solid var(--accent); color: var(--accent); border-radius: 10px; padding: 10px 12px; font-size: 13px; margin: 10px 0; }
 
-  .recorder-close {
-    position: absolute; top: 16px; right: 16px;
-    background: #f0ede6; border: none; width: 32px; height: 32px;
-    border-radius: 50%; font-size: 20px; line-height: 1;
-    color: var(--muted); cursor: pointer;
-  }
-
-  .queue-section { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--rule); }
-  .queue-section h4 {
-    font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em;
-    color: var(--muted); margin-bottom: 8px; font-weight: 700;
-  }
+  .queue-section { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--rule); }
   .queue-item {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 10px 0; border-bottom: 1px solid #f0ede6;
-    font-size: 13px;
+    padding: 8px 0; border-bottom: 1px solid #f0ede6; font-size: 13px;
   }
   .queue-item:last-child { border-bottom: none; }
-  .queue-item .meta { color: var(--muted); }
-  .queue-item .status {
-    font-size: 11px; padding: 2px 8px; border-radius: 999px;
-    text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700;
-  }
+  .queue-item .meta { color: var(--muted); font-size: 11px; }
+  .queue-item .status { font-size: 10px; padding: 2px 7px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
   .queue-item .status.pending { background: #fcecc9; color: #8a5a00; }
   .queue-item .status.synced { background: #d6ecd9; color: #245a2a; }
 
-  .perm-error {
-    background: #fbe9eb; border: 1px solid var(--accent);
-    color: var(--accent); border-radius: 12px;
-    padding: 12px 14px; font-size: 13px; margin: 12px 0;
-  }
+  /* Empty / unconfigured state */
+  .empty-msg { text-align: center; padding: 32px 16px; color: var(--muted); font-size: 14px; }
 
-  /* Lift history overlay (Last → Today) */
-  .lift-history {
-    margin-top: 8px; padding: 8px 10px;
-    background: #f7f4ec; border-radius: 6px;
-    font-size: 12px; line-height: 1.5;
-    border-left: 3px solid var(--ink);
+  /* Install banner */
+  #install-banner {
+    position: fixed; left: 12px; right: 12px;
+    bottom: calc(96px + env(safe-area-inset-bottom));
+    background: var(--ink); color: white; padding: 14px 18px;
+    border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    font-size: 14px; line-height: 1.4; z-index: 200;
+    display: none;
   }
-  .lift-history .last-line {
-    color: var(--ink); font-weight: 600;
-    font-variant-numeric: tabular-nums;
-  }
-  .lift-history .last-meta { color: var(--muted); font-weight: 400; margin-left: 6px; }
-  .lift-history .target-line {
-    color: var(--accent); font-weight: 700;
-    font-variant-numeric: tabular-nums; margin-top: 2px;
-  }
-  .lift-history .target-line::before { content: "→ Today: "; font-weight: 600; }
-
-  /* Bodyweight strip */
-  .bw-strip {
-    background: white; border: 1px solid var(--rule);
-    border-radius: 10px; padding: 14px 18px;
-    margin-bottom: 24px;
-    display: flex; align-items: center; justify-content: space-between;
-    font-variant-numeric: tabular-nums;
-  }
-  .bw-strip .label {
-    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
-    color: var(--muted); font-weight: 700;
-  }
-  .bw-strip .current { font-size: 22px; font-weight: 700; }
-  .bw-strip .trend.up   { color: #245a2a; }
-  .bw-strip .trend.flat { color: var(--muted); }
-  .bw-strip .trend.fast { color: var(--accent); }
-  .bw-strip .updated { font-size: 11px; color: var(--muted); }
-
-  /* Hero */
-  .hero { border-bottom: 2px solid var(--ink); padding-bottom: 32px; margin-bottom: 48px; }
-  .eyebrow {
-    text-transform: uppercase; letter-spacing: 0.18em; font-size: 11px;
-    font-weight: 700; color: var(--accent); margin-bottom: 8px;
-  }
-  h1 {
-    font-family: "New York", "Times New Roman", Georgia, serif;
-    font-weight: 700; font-size: 48px; line-height: 1.05;
-    letter-spacing: -0.02em; margin-bottom: 16px;
-  }
-  .subtitle { font-size: 18px; color: var(--muted); max-width: 600px; }
-
-  /* Stat row */
-  .stats {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 24px; margin: 32px 0;
-    border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
-    padding: 20px 0;
-  }
-  .stat .label {
-    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
-    color: var(--muted); margin-bottom: 4px; font-weight: 600;
-  }
-  .stat .value { font-size: 24px; font-weight: 700; line-height: 1.1; }
-  .stat .unit { font-size: 12px; color: var(--muted); margin-left: 4px; font-weight: 400; }
-
-  /* Section header */
-  h2 {
-    font-family: "New York", "Times New Roman", Georgia, serif;
-    font-weight: 700; font-size: 28px;
-    margin: 64px 0 24px; padding-bottom: 8px;
-    border-bottom: 1px solid var(--ink);
-    letter-spacing: -0.01em;
-  }
-  h3 {
-    font-size: 16px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.1em; margin-bottom: 12px;
-  }
-
-  /* Week schedule grid */
-  .week-grid {
-    display: grid; grid-template-columns: repeat(7, 1fr);
-    gap: 8px; margin-bottom: 32px;
-  }
-  .day-cell {
-    background: white; border: 1px solid var(--rule);
-    padding: 14px 10px; text-align: center;
-    border-radius: 4px; min-height: 110px;
-    display: flex; flex-direction: column; justify-content: space-between;
-  }
-  .day-cell .dow {
-    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--muted); font-weight: 700; margin-bottom: 6px;
-  }
-  .day-cell .session-name { font-size: 13px; font-weight: 700; line-height: 1.25; }
-  .day-cell .location {
-    font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;
-    color: var(--muted); margin-top: 4px;
-  }
-  .day-cell.lower { background: #eef5f0; border-color: var(--lower); }
-  .day-cell.upper { background: #eaf0f7; border-color: var(--upper); }
-  .day-cell.boxing { background: #fbe9eb; border-color: var(--accent); }
-  .day-cell.rest { background: #f4f4f1; }
-
-  /* Workout card */
-  .workout {
-    background: white; border: 1px solid var(--rule); border-radius: 6px;
-    padding: 28px; margin-bottom: 24px; page-break-inside: avoid;
-  }
-  .workout.lower { border-top: 4px solid var(--lower); }
-  .workout.upper { border-top: 4px solid var(--upper); }
-  .workout.special { border-top: 4px solid var(--accent); background: #fffaf5; }
-
-  .workout-header {
-    display: flex; justify-content: space-between; align-items: baseline;
-    border-bottom: 1px solid var(--rule); padding-bottom: 12px; margin-bottom: 20px;
-  }
-  .workout-title {
-    font-family: "New York", "Times New Roman", Georgia, serif;
-    font-size: 22px; font-weight: 700; letter-spacing: -0.01em;
-  }
-  .workout-meta {
-    font-size: 12px; color: var(--muted); text-align: right;
-  }
-  .workout-meta strong { color: var(--ink); display: block; font-size: 13px; }
-
-  .lifts { list-style: none; counter-reset: lift; }
-  .lift {
-    counter-increment: lift;
-    display: grid; grid-template-columns: 32px 1fr auto;
-    gap: 16px; align-items: baseline;
-    padding: 14px 0; border-bottom: 1px solid #f0ede6;
-  }
-  .lift:last-child { border-bottom: none; }
-  .lift::before {
-    content: counter(lift, decimal-leading-zero);
-    font-size: 11px; color: var(--muted); font-weight: 700;
-    font-variant-numeric: tabular-nums; padding-top: 2px;
-  }
-  .lift-name { font-weight: 600; font-size: 15px; }
-  .lift-detail { font-size: 13px; color: var(--muted); margin-top: 3px; }
-  .lift-prescription {
-    font-size: 14px; font-weight: 700;
-    font-variant-numeric: tabular-nums; white-space: nowrap;
-    color: var(--ink);
-  }
-  .lift-prescription .rir {
-    color: var(--accent); font-weight: 600; margin-left: 6px; font-size: 12px;
-  }
-
-  .tally {
-    margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--rule);
-    font-size: 12px; color: var(--muted); font-style: italic;
-  }
-
-  /* Auto-reg callout */
-  .callout {
-    background: var(--accent-soft); border-left: 4px solid var(--accent);
-    padding: 24px 28px; border-radius: 0 6px 6px 0;
-    margin: 32px 0; page-break-inside: avoid;
-  }
-  .callout h3 { color: var(--accent); margin-bottom: 12px; }
-  .callout ol { margin-left: 20px; margin-top: 8px; }
-  .callout li { margin-bottom: 6px; font-size: 14px; }
-  .decision-tree {
-    display: grid; grid-template-columns: 80px 1fr; gap: 12px;
-    background: white; border: 1px solid var(--rule); border-radius: 4px;
-    padding: 16px; margin-top: 16px;
-  }
-  .decision-tree .pts {
-    font-weight: 700; font-variant-numeric: tabular-nums;
-    color: var(--accent); padding-right: 12px;
-    border-right: 2px solid var(--rule); text-align: center;
-  }
-  .decision-tree .action { font-size: 14px; }
-
-  /* Tables */
-  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
-  th { text-align: left; font-size: 11px; text-transform: uppercase;
-       letter-spacing: 0.1em; color: var(--muted); font-weight: 700;
-       border-bottom: 2px solid var(--ink); padding: 10px 12px; }
-  td { padding: 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
-  tr:last-child td { border-bottom: none; }
-
-  /* Nutrition card */
-  .nutrition-grid {
-    display: grid; grid-template-columns: repeat(2, 1fr);
-    gap: 16px; margin: 20px 0;
-  }
-  .macro {
-    background: white; border: 1px solid var(--rule);
-    padding: 16px; border-radius: 4px;
-  }
-  .macro .name {
-    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--muted); font-weight: 700; margin-bottom: 4px;
-  }
-  .macro .num { font-size: 22px; font-weight: 700; line-height: 1.1; }
-  .macro .note { font-size: 12px; color: var(--muted); margin-top: 4px; }
-
-  /* Print styles */
-  @media print {
-    body { background: white; font-size: 11pt; }
-    .container { padding: 0; max-width: 100%; }
-    .no-print { display: none !important; }
-    h1 { font-size: 28pt; }
-    h2 { font-size: 18pt; margin-top: 24pt; page-break-before: auto; }
-    .workout { box-shadow: none; page-break-inside: avoid; margin-bottom: 12pt; }
-    .callout { page-break-inside: avoid; }
-    .week-grid { page-break-inside: avoid; }
-    @page { margin: 0.6in; }
-  }
-
-  /* Mobile */
-  @media (max-width: 640px) {
-    .container { padding: 24px 16px 64px; }
-    h1 { font-size: 32px; }
-    .stats { grid-template-columns: repeat(2, 1fr); }
-    .week-grid { grid-template-columns: repeat(2, 1fr); }
-    .nutrition-grid { grid-template-columns: 1fr; }
-  }
-
-  /* Floating actions */
-  .actions {
-    position: fixed; bottom: 24px; right: 24px; z-index: 100;
-    display: flex; gap: 8px;
-  }
-  .btn {
-    background: var(--ink); color: white; border: none;
-    padding: 12px 18px; font-size: 13px; font-weight: 600;
-    border-radius: 999px; cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    font-family: inherit; letter-spacing: 0.02em;
-  }
-  .btn:hover { background: var(--accent); }
-  .day-anchor { scroll-margin-top: 24px; }
+  #install-banner.visible { display: block; }
+  #install-banner strong { color: white; display: block; margin-bottom: 2px; }
+  #install-banner small { color: #b8b8b8; font-size: 12px; }
+  #install-banner .close { position: absolute; top: 8px; right: 12px; background: none; border: none; color: #b8b8b8; font-size: 18px; cursor: pointer; padding: 4px; }
+  @media (display-mode: standalone) { #install-banner { display: none !important; } }
 </style>
 </head>
 <body>
-<div class="container">
 
-  <!-- BRIEFING (Whoop-driven, hidden if no readiness.json) -->
-  <section class="briefing" id="briefing" hidden>
-    <div class="briefing-header">
-      <span class="briefing-label" id="briefing-day">TODAY</span>
-      <span class="briefing-updated" id="briefing-updated"></span>
+<!-- TODAY TAB -->
+<div class="tab-panel active" id="tab-today">
+  <div class="container">
+    <div style="margin-bottom: 12px;">
+      <div class="eyebrow" id="today-eyebrow">TODAY · —</div>
+      <h1>Briefing.</h1>
     </div>
-    <div class="briefing-row briefing-hero">
-      <div class="briefing-metric">
-        <div class="b-label">RECOVERY</div>
-        <div class="b-value" id="b-recovery"><span class="b-num">—</span><span class="b-unit">%</span></div>
+
+    <!-- Whoop briefing -->
+    <section class="briefing" id="briefing" hidden>
+      <div class="briefing-header">
+        <span class="briefing-label">RECOVERY</span>
+        <span class="briefing-updated" id="briefing-updated"></span>
       </div>
-      <div class="briefing-call" id="b-call">—</div>
-    </div>
-    <div class="briefing-row briefing-secondary">
-      <div class="briefing-metric"><div class="b-label">HRV</div><div class="b-sub" id="b-hrv">—</div></div>
-      <div class="briefing-metric"><div class="b-label">SLEEP</div><div class="b-sub" id="b-sleep">—</div></div>
-      <div class="briefing-metric"><div class="b-label">KCAL TGT</div><div class="b-sub" id="b-kcal">—</div></div>
-    </div>
-    <div class="briefing-empty" id="briefing-empty" hidden>
-      Whoop not connected yet. <a href="#setup">Setup</a>
-    </div>
-  </section>
+      <div class="briefing-row briefing-hero">
+        <div class="briefing-metric">
+          <div class="b-value" id="b-recovery"><span class="b-num">—</span><span class="b-unit">%</span></div>
+        </div>
+        <div class="briefing-call" id="b-call">—</div>
+      </div>
+      <div class="briefing-row briefing-secondary">
+        <div class="briefing-metric"><div class="b-label">HRV</div><div class="b-sub" id="b-hrv">—</div></div>
+        <div class="briefing-metric"><div class="b-label">SLEEP</div><div class="b-sub" id="b-sleep">—</div></div>
+        <div class="briefing-metric"><div class="b-label">KCAL TGT</div><div class="b-sub" id="b-kcal">—</div></div>
+      </div>
+    </section>
 
-  <!-- BODYWEIGHT STRIP (hidden until lifts.json loads) -->
-  <div class="bw-strip" id="bw-strip" hidden>
-    <div>
-      <div class="label">BODYWEIGHT</div>
-      <div class="current"><span id="bw-current">—</span> <span style="font-size:13px;color:var(--muted);font-weight:400">lb</span></div>
+    <!-- BW strip -->
+    <div class="bw-strip" id="bw-strip" hidden>
+      <div>
+        <div class="label">BODYWEIGHT</div>
+        <div class="current"><span id="bw-current">—</span> <span style="font-size:13px;color:var(--muted);font-weight:400">lb</span></div>
+      </div>
+      <div>
+        <div class="label">7-DAY TREND</div>
+        <div class="trend" id="bw-trend">—</div>
+      </div>
+      <div class="updated" id="bw-updated"></div>
     </div>
-    <div>
-      <div class="label">7-DAY TREND</div>
-      <div class="trend" id="bw-trend">—</div>
+
+    <!-- Today's session (auto-rotated) -->
+    <h2 style="margin-top: 24px;">Today's session</h2>
+    <div id="today-session"></div>
+
+    <!-- Daily macros (from diet log) -->
+    <h2>Today's macros</h2>
+    <div class="macros-grid" id="macros-today">
+      <div class="macro-pill protein"><div class="name">Protein</div><div class="val" id="m-p">0</div><div class="target">/ 145g</div></div>
+      <div class="macro-pill"><div class="name">Carbs</div><div class="val" id="m-c">0</div><div class="target">/ 300g</div></div>
+      <div class="macro-pill"><div class="name">Fat</div><div class="val" id="m-f">0</div><div class="target">/ 70g</div></div>
+      <div class="macro-pill"><div class="name">Kcal</div><div class="val" id="m-k">0</div><div class="target">/ 2,450</div></div>
     </div>
-    <div class="updated" id="bw-updated"></div>
   </div>
+</div>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="eyebrow">Hypertrophy Block · 24 Weeks</div>
+<!-- PROGRAM TAB -->
+<div class="tab-panel" id="tab-program">
+  <div class="container">
+    <div class="eyebrow">Hypertrophy · 24 Weeks</div>
     <h1>The Program.</h1>
-    <p class="subtitle">Built for muscle mass without sacrificing boxing performance. Four lift days, three boxing days, four blocks of six weeks.</p>
-  </section>
+    <p style="margin-top: 12px; color: var(--muted);">Four lift sessions on rotation. Pick whichever days work — just leave 24 hrs between hitting the same muscles. Bag work fits anywhere, no special rules.</p>
 
-  <!-- STATS -->
-  <div class="stats">
-    <div class="stat">
-      <div class="label">Starting</div>
-      <div class="value">155<span class="unit">lb</span></div>
+    <h2>The 4 sessions</h2>
+    <details>
+      <summary>Lower A — Quads <span style="color:var(--muted);font-weight:400;font-size:13px;">· Gym · 55–65 min</span></summary>
+      <ol class="lifts" style="margin-top: 14px;">
+        <li class="lift"><div><div class="lift-name">Leg Press</div><div class="lift-detail">Primary quad driver. Add load when 10 reps clean across all sets.</div></div><div class="lift-prescription">4 × 8–10 <span class="rir">RIR 1–2</span></div></li>
+        <li class="lift"><div><div class="lift-name">Bulgarian Split Squat</div><div class="lift-detail">DBs 50–75 lb each. Long stance.</div></div><div class="lift-prescription">3 × 8–10 / leg <span class="rir">RIR 1</span></div></li>
+        <li class="lift"><div><div class="lift-name">Leg Extension</div><div class="lift-detail">Pause 1 sec at top.</div></div><div class="lift-prescription">4 × 12–15 <span class="rir">RIR 0</span></div></li>
+        <li class="lift"><div><div class="lift-name">Leg Curl</div><div class="lift-detail">Slow eccentric.</div></div><div class="lift-prescription">4 × 10–12 <span class="rir">RIR 1</span></div></li>
+        <li class="lift"><div><div class="lift-name">Standing Calf Raise</div><div class="lift-detail">Full ROM, pause stretch.</div></div><div class="lift-prescription">4 × 12–15 <span class="rir">RIR 0</span></div></li>
+        <li class="lift"><div><div class="lift-name">Hanging Leg Raise</div><div class="lift-detail">Strict, no swing.</div></div><div class="lift-prescription">3 × AMRAP <span class="rir">RIR 0</span></div></li>
+      </ol>
+    </details>
+
+    <details>
+      <summary>Upper A — BB Push + Ring Pull <span style="color:var(--muted);font-weight:400;font-size:13px;">· Apt · 60–70 min</span></summary>
+      <ol class="lifts" style="margin-top: 14px;">
+        <li class="lift"><div><div class="lift-name">Bench Press</div><div class="lift-detail">Start 135 lb. +1.25 lb when 8 × 4 sets clean.</div></div><div class="lift-prescription">4 × 6–8 <span class="rir">RIR 1–2</span></div></li>
+        <li class="lift"><div><div class="lift-name">Weighted Ring Pull-Up</div><div class="lift-detail">BW + 10 lb. Chest to rings.</div></div><div class="lift-prescription">4 × 6–8 <span class="rir">RIR 1</span></div></li>
+        <li class="lift"><div><div class="lift-name">Ring Dip</div><div class="lift-detail">Add 18 lb KB in feet when easy.</div></div><div class="lift-prescription">3 × 8–12 <span class="rir">RIR 1</span></div></li>
+        <li class="lift"><div><div class="lift-name">Single-Arm KB Row</div><div class="lift-detail">72 lb, 3-sec eccentric.</div></div><div class="lift-prescription">3 × 10–12 / arm <span class="rir">RIR 1</span></div></li>
+        <li class="lift"><div><div class="lift-name">Spider Curl Rings</div><div class="lift-detail">Body angled. Squeeze top.</div></div><div class="lift-prescription">4 × 10–12 <span class="rir">RIR 0</span></div></li>
+        <li class="lift"><div><div class="lift-name">Ring Skull-Crusher</div><div class="lift-detail">Body angled. Lower behind head.</div></div><div class="lift-prescription">3 × 12–15 <span class="rir">RIR 0</span></div></li>
+      </ol>
+    </details>
+
+    <details>
+      <summary>Lower B — Hinge <span style="color:var(--muted);font-weight:400;font-size:13px;">· Apt · 50–60 min</span></summary>
+      <ol class="lifts" style="margin-top: 14px;">
+        <li class="lift"><div><div class="lift-name">Romanian Deadlift</div><div class="lift-detail">3-sec eccentric. Bar caps at 222.5 lb.</div></div><div class="lift-prescription">4 × 8–10 <span class="rir">RIR 2</span></div></li>
+        <li class="lift"><div><div class="lift-name">Barbell Hip Thrust</div><div class="lift-detail">Couch + towel pad. Pause top.</div></div><div class="lift-prescription">3 × 10–12 <span class="rir">RIR 1</span></div></li>
+        <li class="lift"><div><div class="lift-name">Single-Leg KB RDL</div><div class="lift-detail">72 lb KB, opposite hand.</div></div><div class="lift-prescription">3 × 8–10 / leg <span class="rir">RIR 1</span></div></li>
+        <li class="lift"><div><div class="lift-name">KB Swing</div><div class="lift-detail">72 lb hardstyle. Hip-hinge driven.</div></div><div class="lift-prescription">4 × 10 <span class="rir">RIR 2</span></div></li>
+        <li class="lift"><div><div class="lift-name">Seated Calf Raise</div><div class="lift-detail">KB on knees.</div></div><div class="lift-prescription">3 × 15–20 <span class="rir">RIR 0</span></div></li>
+        <li class="lift"><div><div class="lift-name">Pallof Press</div><div class="lift-detail">Rings, anti-rotation.</div></div><div class="lift-prescription">3 × 10 / side <span class="rir">RIR 1</span></div></li>
+      </ol>
+    </details>
+
+    <details>
+      <summary>Upper B — Pulldown + DB + Cable <span style="color:var(--muted);font-weight:400;font-size:13px;">· Gym · 60–70 min</span></summary>
+      <ol class="lifts" style="margin-top: 14px;">
+        <li class="lift"><div><div class="lift-name">Lat Pulldown</div><div class="lift-detail">Wide grip. 1-sec pause at chest.</div></div><div class="lift-prescription">4 × 8–12 <span class="rir">RIR 1</span></div></li>
+        <li class="lift"><div><div class="lift-name">Incline DB Press</div><div class="lift-detail">30°. DBs to 75 lb.</div></div><div class="lift-prescription">4 × 8–10 <span class="rir">RIR 1</span></div></li>
+        <li class="lift"><div><div class="lift-name">Cable Fly</div><div class="lift-detail">Mid-chest. Slight forward lean.</div></div><div class="lift-prescription">4 × 10–12 <span class="rir">RIR 0</span></div></li>
+        <li class="lift"><div><div class="lift-name">Seated DB OHP</div><div class="lift-detail">Back supported.</div></div><div class="lift-prescription">3 × 8–10 <span class="rir">RIR 1</span></div></li>
+        <li class="lift"><div><div class="lift-name">DB Hammer Curl</div><div class="lift-detail">Palms in. Brachialis bias.</div></div><div class="lift-prescription">4 × 10–12 <span class="rir">RIR 0</span></div></li>
+        <li class="lift"><div><div class="lift-name">Cable Triceps Pushdown</div><div class="lift-detail">Rope or straight bar.</div></div><div class="lift-prescription">3 × 12–15 <span class="rir">RIR 0</span></div></li>
+        <li class="lift"><div><div class="lift-name">Cable Lateral Raise</div><div class="lift-detail">Low pulley, single-arm.</div></div><div class="lift-prescription">3 × 12–15 <span class="rir">RIR 0</span></div></li>
+      </ol>
+    </details>
+
+    <h2>Auto-regulation</h2>
+    <div class="card muted">
+      <div class="card-title">Run before every lift</div>
+      <p style="font-size: 13px; margin-bottom: 8px;">Each YES = 1 point.</p>
+      <ol style="margin-left: 18px; font-size: 13px;">
+        <li>Slept &lt; 6 hrs?</li>
+        <li>Resting HR &gt; 7 bpm above baseline (Whoop)?</li>
+        <li>Long bag session yesterday + legs sore?</li>
+        <li>Joint pain at end-range during warm-up?</li>
+        <li>Energy ≤ 4/10?</li>
+      </ol>
+      <table>
+        <tr><td><strong>0–1</strong></td><td>Train as planned, push for progression.</td></tr>
+        <tr><td><strong>2</strong></td><td>Top sets RIR 2 minimum. No PRs.</td></tr>
+        <tr><td><strong>3</strong></td><td>Cut load 30% or working sets by 1.</td></tr>
+        <tr><td><strong>4–5</strong></td><td><strong>Skip lift.</strong> 20 min mobility only.</td></tr>
+      </table>
+      <p style="font-size: 12px; color: var(--muted); margin-top: 8px;">If Whoop is connected, the briefing card on TODAY computes this for you automatically.</p>
     </div>
-    <div class="stat">
-      <div class="label">Target Gain</div>
-      <div class="value">10–14<span class="unit">lb / 24 wk</span></div>
-    </div>
-    <div class="stat">
-      <div class="label">Lift Days</div>
-      <div class="value">4<span class="unit">/ wk</span></div>
-    </div>
-    <div class="stat">
-      <div class="label">Daily Calories</div>
-      <div class="value">2,450<span class="unit">kcal</span></div>
-    </div>
+
+    <h2>The 24-week roadmap</h2>
+    <table>
+      <tr><th>Block</th><th>Weeks</th><th>Focus</th></tr>
+      <tr><td><strong>1</strong></td><td>1–6</td><td>Accumulation. Deload Wk 6.</td></tr>
+      <tr><td><strong>2</strong></td><td>7–12</td><td>Intensification. Deload Wk 12.</td></tr>
+      <tr><td><strong>3</strong></td><td>13–18</td><td>Chest + Biceps specialization.</td></tr>
+      <tr><td><strong>4</strong></td><td>19–24</td><td>Quad specialization.</td></tr>
+    </table>
+
+    <details style="margin-top: 14px;">
+      <summary>Deload week protocol</summary>
+      <ul style="margin-top: 12px; margin-left: 18px; font-size: 14px;">
+        <li><strong>Sets:</strong> 50% of last week.</li>
+        <li><strong>Load:</strong> 70% of last week.</li>
+        <li><strong>RIR:</strong> 4–5 across all sets. Should feel easy.</li>
+        <li><strong>Nutrition:</strong> Hold maintenance. Not a cut.</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>Why this works (sources)</summary>
+      <p style="margin-top: 12px; font-size: 13px;">Volume landmarks (10–20 sets/muscle/wk) — Schoenfeld 2017 meta. Frequency 2× /muscle/wk — Schoenfeld, Grgic, Krieger 2019. Protein 0.8 g/lb floor — Morton 2018. Surplus rate +0.25–0.5 lb/wk — Iraki/Helms 2019. RIR auto-reg — Helms 2018. Block periodization with specialization — Renaissance Periodization MV/MEV/MAV/MRV.</p>
+    </details>
   </div>
-
-  <!-- WEEK AT A GLANCE -->
-  <h2>Week at a Glance</h2>
-  <div class="week-grid">
-    <div class="day-cell lower">
-      <div class="dow">Sun</div>
-      <div class="session-name">Lower A<br>Quads</div>
-      <div class="location">Gym</div>
-    </div>
-    <div class="day-cell boxing">
-      <div class="dow">Mon</div>
-      <div class="session-name">Boxing<br>Technique</div>
-      <div class="location">—</div>
-    </div>
-    <div class="day-cell upper">
-      <div class="dow">Tue</div>
-      <div class="session-name">Upper A<br>Push + Pull</div>
-      <div class="location">Apt</div>
-    </div>
-    <div class="day-cell boxing">
-      <div class="dow">Wed</div>
-      <div class="session-name">Boxing<br>Pads / Rounds</div>
-      <div class="location">—</div>
-    </div>
-    <div class="day-cell lower">
-      <div class="dow">Thu</div>
-      <div class="session-name">Lower B<br>Hinge</div>
-      <div class="location">Apt</div>
-    </div>
-    <div class="day-cell upper">
-      <div class="dow">Fri</div>
-      <div class="session-name">Upper B<br>Pull + DB</div>
-      <div class="location">Gym</div>
-    </div>
-    <div class="day-cell boxing">
-      <div class="dow">Sat</div>
-      <div class="session-name">Boxing<br>Sparring</div>
-      <div class="location">—</div>
-    </div>
-  </div>
-
-  <!-- WORKOUTS -->
-  <h2>The Four Sessions</h2>
-
-  <!-- LOWER A -->
-  <article class="workout lower day-anchor" id="lower-a">
-    <div class="workout-header">
-      <div>
-        <div class="workout-title">Lower A — Quad Emphasis</div>
-        <div class="lift-detail">Sunday · Upstairs Gym</div>
-      </div>
-      <div class="workout-meta">
-        <strong>55–65 min</strong>
-        Quads · Hams · Calves · Core
-      </div>
-    </div>
-    <ol class="lifts">
-      <li class="lift">
-        <div>
-          <div class="lift-name">Leg Press</div>
-          <div class="lift-detail">Primary quad driver. Add load when 10 reps clean across all sets.</div>
-        </div>
-        <div class="lift-prescription">4 × 8–10 <span class="rir">RIR 1–2</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">Bulgarian Split Squat</div>
-          <div class="lift-detail">DBs 50–75 lb each. Long stance, knee tracks toes.</div>
-        </div>
-        <div class="lift-prescription">3 × 8–10 / leg <span class="rir">RIR 1</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">Leg Extension</div>
-          <div class="lift-detail">Pause 1 sec at top. Stretched-position bias.</div>
-        </div>
-        <div class="lift-prescription">4 × 12–15 <span class="rir">RIR 0</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">Lying / Seated Leg Curl</div>
-          <div class="lift-detail">Slow eccentric. Hams secondary today; main hinge work Thursday.</div>
-        </div>
-        <div class="lift-prescription">4 × 10–12 <span class="rir">RIR 1</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">Standing Calf Raise</div>
-          <div class="lift-detail">Full ROM, pause stretch.</div>
-        </div>
-        <div class="lift-prescription">4 × 12–15 <span class="rir">RIR 0</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">Hanging Leg Raise</div>
-          <div class="lift-detail">Strict, no swing.</div>
-        </div>
-        <div class="lift-prescription">3 × AMRAP <span class="rir">RIR 0</span></div>
-      </li>
-    </ol>
-    <div class="tally">Weekly tally contribution → Quads 11 · Hams 4 · Calves 4 · Core 3</div>
-  </article>
-
-  <!-- UPPER A -->
-  <article class="workout upper day-anchor" id="upper-a">
-    <div class="workout-header">
-      <div>
-        <div class="workout-title">Upper A — BB Push + Ring Pull</div>
-        <div class="lift-detail">Tuesday · Apartment</div>
-      </div>
-      <div class="workout-meta">
-        <strong>60–70 min</strong>
-        Chest · Back · Biceps · Triceps
-      </div>
-    </div>
-    <ol class="lifts">
-      <li class="lift">
-        <div>
-          <div class="lift-name">Barbell Bench Press</div>
-          <div class="lift-detail">Start 135 lb. Add 1.25 lb plates when 8 × 4 sets clean. Pause reps when ≥ 180 lb.</div>
-        </div>
-        <div class="lift-prescription">4 × 6–8 <span class="rir">RIR 1–2</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">Weighted Ring Pull-Up</div>
-          <div class="lift-detail">BW + 10 lb start. Full ROM, chest to rings.</div>
-        </div>
-        <div class="lift-prescription">4 × 6–8 <span class="rir">RIR 1</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">Ring Dip</div>
-          <div class="lift-detail">Bodyweight. Add 18 lb KB in feet when easy.</div>
-        </div>
-        <div class="lift-prescription">3 × 8–12 <span class="rir">RIR 1</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">Single-Arm KB Row</div>
-          <div class="lift-detail">72 lb KB. 3-sec eccentric. Alternating arms.</div>
-        </div>
-        <div class="lift-prescription">3 × 10–12 / arm <span class="rir">RIR 1</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">Spider Curl on Rings</div>
-          <div class="lift-detail">Body angled, rings low. Squeeze hard at top.</div>
-        </div>
-        <div class="lift-prescription">4 × 10–12 <span class="rir">RIR 0</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">Ring Skull-Crusher</div>
-          <div class="lift-detail">Body angled. Lower forehead behind head, drive up.</div>
-        </div>
-        <div class="lift-prescription">3 × 12–15 <span class="rir">RIR 0</span></div>
-      </li>
-    </ol>
-    <div class="tally">Weekly tally contribution → Chest 7 · Back 7 · Biceps 4 · Triceps 6</div>
-  </article>
-
-  <!-- LOWER B -->
-  <article class="workout lower day-anchor" id="lower-b">
-    <div class="workout-header">
-      <div>
-        <div class="workout-title">Lower B — Hinge Emphasis</div>
-        <div class="lift-detail">Thursday · Apartment</div>
-      </div>
-      <div class="workout-meta">
-        <strong>50–60 min</strong>
-        Hams · Glutes · Calves · Core
-      </div>
-    </div>
-    <ol class="lifts">
-      <li class="lift">
-        <div>
-          <div class="lift-name">Romanian Deadlift</div>
-          <div class="lift-detail">3-sec eccentric from week 1. Bar caps at 222.5 lb — tempo carries the load.</div>
-        </div>
-        <div class="lift-prescription">4 × 8–10 <span class="rir">RIR 2</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">Barbell Hip Thrust</div>
-          <div class="lift-detail">Couch + folded towel pad. Pause 1 sec at top.</div>
-        </div>
-        <div class="lift-prescription">3 × 10–12 <span class="rir">RIR 1</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">Single-Leg KB RDL</div>
-          <div class="lift-detail">72 lb KB, opposite hand. Hips square.</div>
-        </div>
-        <div class="lift-prescription">3 × 8–10 / leg <span class="rir">RIR 1</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">KB Swing</div>
-          <div class="lift-detail">72 lb hardstyle. Hip-hinge driven, not squat-driven. 2-min rest.</div>
-        </div>
-        <div class="lift-prescription">4 × 10 <span class="rir">RIR 2</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">Seated Calf Raise</div>
-          <div class="lift-detail">KB on knees, toes off plate. Burns intentional.</div>
-        </div>
-        <div class="lift-prescription">3 × 15–20 <span class="rir">RIR 0</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">Pallof Press</div>
-          <div class="lift-detail">Rings, anti-rotation. Hold 2 sec at full extension.</div>
-        </div>
-        <div class="lift-prescription">3 × 10 / side <span class="rir">RIR 1</span></div>
-      </li>
-    </ol>
-    <div class="tally">Weekly tally contribution → Hams 7 · Glutes 4 · Calves 3 · Core 3</div>
-  </article>
-
-  <!-- UPPER B -->
-  <article class="workout upper day-anchor" id="upper-b">
-    <div class="workout-header">
-      <div>
-        <div class="workout-title">Upper B — Pulldown + DB + Cable</div>
-        <div class="lift-detail">Friday · Upstairs Gym</div>
-      </div>
-      <div class="workout-meta">
-        <strong>60–70 min</strong>
-        Back · Chest · Shoulders · Arms
-      </div>
-    </div>
-    <ol class="lifts">
-      <li class="lift">
-        <div>
-          <div class="lift-name">Lat Pulldown</div>
-          <div class="lift-detail">Wide grip. 1-sec pause at chest. Full stretch overhead.</div>
-        </div>
-        <div class="lift-prescription">4 × 8–12 <span class="rir">RIR 1</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">Incline DB Press</div>
-          <div class="lift-detail">30° bench. DBs to 75 lb. Touch chest each rep.</div>
-        </div>
-        <div class="lift-prescription">4 × 8–10 <span class="rir">RIR 1</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">Cable Fly</div>
-          <div class="lift-detail">Mid-chest height. Slight forward lean. Stretch at bottom.</div>
-        </div>
-        <div class="lift-prescription">4 × 10–12 <span class="rir">RIR 0</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">Seated DB Overhead Press</div>
-          <div class="lift-detail">Back supported. Press to lockout, no soft elbow.</div>
-        </div>
-        <div class="lift-prescription">3 × 8–10 <span class="rir">RIR 1</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">DB Hammer Curl</div>
-          <div class="lift-detail">Palms in. Brachialis bias.</div>
-        </div>
-        <div class="lift-prescription">4 × 10–12 <span class="rir">RIR 0</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">Cable Triceps Pushdown</div>
-          <div class="lift-detail">Rope or straight bar. Squeeze lockout.</div>
-        </div>
-        <div class="lift-prescription">3 × 12–15 <span class="rir">RIR 0</span></div>
-      </li>
-      <li class="lift">
-        <div>
-          <div class="lift-name">Cable Lateral Raise</div>
-          <div class="lift-detail">Low pulley, single-arm. Lead with elbow.</div>
-        </div>
-        <div class="lift-prescription">3 × 12–15 <span class="rir">RIR 0</span></div>
-      </li>
-    </ol>
-    <div class="tally">Weekly tally contribution → Back 4 · Chest 8 · Shoulders 6 · Biceps 4 · Triceps 3</div>
-  </article>
-
-  <!-- AUTO-REGULATION -->
-  <h2>Auto-Regulation — Run Every Morning</h2>
-  <div class="callout">
-    <h3>The 5-Question Check</h3>
-    <p style="font-size: 14px; margin-bottom: 12px;">Each <strong>YES</strong> = 1 point. Run before every lift session.</p>
-    <ol>
-      <li>Slept &lt; 6 hrs last night?</li>
-      <li>Resting HR &gt; 7 bpm above baseline (Whoop)?</li>
-      <li>Sparred or hard-contact boxing in last 24 hrs?</li>
-      <li>Joint pain at end-range during warm-up (lead shoulder, hip, knee)?</li>
-      <li>Subjective energy ≤ 4/10?</li>
-    </ol>
-
-    <div class="decision-tree">
-      <div class="pts">0–1</div><div class="action"><strong>Train as planned.</strong> Standard session, push for progression.</div>
-      <div class="pts">2</div><div class="action"><strong>Train with cap.</strong> Top sets at RIR 2 minimum. No PRs today.</div>
-      <div class="pts">3</div><div class="action"><strong>Reduce.</strong> Cut top-set load by 30% OR working sets by 1. Keep movement.</div>
-      <div class="pts">4–5</div><div class="action"><strong>Skip the lift.</strong> 20 min mobility + ring work. This rule protects your boxing.</div>
-    </div>
-  </div>
-
-  <!-- BOXING INTEGRATION -->
-  <h2>Boxing Integration</h2>
-  <table>
-    <thead>
-      <tr><th>Boxing Activity</th><th>Lifting Risk</th><th>Rule</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Sparring</td><td>Highest</td><td>No heavy upper push within 24 hrs. No quad day within 48 hrs prior.</td></tr>
-      <tr><td>Pad Work / Mitts</td><td>High</td><td>No heavy bench/OHP within 18 hrs.</td></tr>
-      <tr><td>Bag Rounds</td><td>Medium</td><td>OK same day; avoid same-day heavy upper.</td></tr>
-      <tr><td>Footwork / Shadowbox</td><td>Low</td><td>Compatible with anything except quad day.</td></tr>
-      <tr><td>Conditioning Runs</td><td>Low–Medium</td><td>Compatible. Watch leg soreness.</td></tr>
-      <tr><td>Coaching (holding pads)</td><td>Medium</td><td>If &gt; 4 rounds, skip same-day heavy press.</td></tr>
-    </tbody>
-  </table>
-  <p style="font-size: 13px; color: var(--muted); margin-top: 8px;"><strong>Schedule shifts?</strong> Identify your sparring day → place quad-heavy lower 5+ days before, hinge lower 48 hrs before, upper days fill the rest.</p>
-
-  <!-- BLOCKS -->
-  <h2>The 24-Week Roadmap</h2>
-  <table>
-    <thead>
-      <tr><th>Block</th><th>Weeks</th><th>Phase</th><th>Focus</th></tr>
-    </thead>
-    <tbody>
-      <tr><td><strong>1</strong></td><td>1–6</td><td>Accumulation</td><td>Build to MAV across all muscles. Deload Wk 6.</td></tr>
-      <tr><td><strong>2</strong></td><td>7–12</td><td>Intensification</td><td>Drive load on compounds. Hold volume. Deload Wk 12.</td></tr>
-      <tr><td><strong>3</strong></td><td>13–18</td><td>Chest + Biceps Specialization</td><td>Add Wed gym pump day. Priority muscles to MRV.</td></tr>
-      <tr><td><strong>4</strong></td><td>19–24</td><td>Quad Specialization</td><td>Add 2nd quad day. Chest/biceps drop to maintenance.</td></tr>
-    </tbody>
-  </table>
-
-  <!-- DELOAD -->
-  <h2>Deload Weeks (6 · 12 · 18 · 24)</h2>
-  <ul style="list-style: none; padding-left: 0;">
-    <li style="padding: 8px 0; border-bottom: 1px solid var(--rule);"><strong>Sets:</strong> 50% of last week's volume.</li>
-    <li style="padding: 8px 0; border-bottom: 1px solid var(--rule);"><strong>Load:</strong> 70% of last week's working weight.</li>
-    <li style="padding: 8px 0; border-bottom: 1px solid var(--rule);"><strong>RIR:</strong> 4–5 across all sets. Should feel easy.</li>
-    <li style="padding: 8px 0; border-bottom: 1px solid var(--rule);"><strong>Boxing:</strong> Hold normal training. Skip sparring if optional.</li>
-    <li style="padding: 8px 0;"><strong>Nutrition:</strong> Hold maintenance. Deload is not a cut.</li>
-  </ul>
-
-  <!-- NUTRITION -->
-  <h2>Nutrition Floor</h2>
-  <p style="font-size: 14px; color: var(--muted); margin-bottom: 16px;">Whoop TDEE = 2,150 kcal. Surplus target +300 kcal/day.</p>
-  <div class="nutrition-grid">
-    <div class="macro">
-      <div class="name">Total Calories</div>
-      <div class="num">2,400–2,500</div>
-      <div class="note">kcal / day</div>
-    </div>
-    <div class="macro">
-      <div class="name">Protein</div>
-      <div class="num">130–155 g</div>
-      <div class="note">~ 30–40 g × 4 meals</div>
-    </div>
-    <div class="macro">
-      <div class="name">Carbs</div>
-      <div class="num">280–320 g</div>
-      <div class="note">Boxing glycogen — non-negotiable</div>
-    </div>
-    <div class="macro">
-      <div class="name">Fat</div>
-      <div class="num">60–75 g</div>
-      <div class="note">Fill remainder</div>
-    </div>
-  </div>
-  <p style="font-size: 14px; margin-top: 12px;"><strong>Rate of gain:</strong> +0.25 to +0.5 lb per week. Below 0.25 → +200 kcal. Above 0.75 → −150 kcal.</p>
-
-  <!-- SOURCES -->
-  <h2>Why It Works (Briefly)</h2>
-  <p style="font-size: 14px; max-width: 640px;">Volume landmarks (10–20 sets/muscle/week) from <em>Schoenfeld 2017</em> meta. Frequency 2× /muscle from <em>Schoenfeld, Grgic, Krieger 2019</em>. Protein 0.8 g/lb floor from <em>Morton 2018</em>. Surplus rate from <em>Iraki/Helms 2019</em>. RIR autoregulation from <em>Helms 2018</em> + MASS Research Review. Block periodization with specialization phases from Renaissance Periodization MV/MEV/MAV/MRV framework.</p>
-
 </div>
 
-<div class="actions no-print">
-  <button class="btn" onclick="window.print()">Print / Save PDF</button>
+<!-- DIET TAB -->
+<div class="tab-panel" id="tab-diet">
+  <div class="container">
+    <div class="eyebrow">Hypertrophy fuel · Science-based</div>
+    <h1>Diet.</h1>
+    <p style="margin-top: 12px; color: var(--muted);">4 simple meals + 2 Perfect Amino doses + pre-sleep protein. Same plates on rotation, hit the macros, no decisions.</p>
+
+    <h2>Daily macros target</h2>
+    <div class="macros-grid">
+      <div class="macro-pill protein"><div class="name">Protein</div><div class="val">145</div><div class="target">grams</div></div>
+      <div class="macro-pill"><div class="name">Carbs</div><div class="val">300</div><div class="target">grams</div></div>
+      <div class="macro-pill"><div class="name">Fat</div><div class="val">65</div><div class="target">grams</div></div>
+      <div class="macro-pill"><div class="name">Kcal</div><div class="val">2,450</div><div class="target">/ day</div></div>
+    </div>
+    <p style="font-size: 12px; color: var(--muted); margin-top: 8px;">Maths: 1.9 g/kg protein · 4.3 g/kg carbs · 0.9 g/kg fat. Whoop strain auto-tunes the kcal target — see TODAY.</p>
+
+    <h2>The science (current consensus)</h2>
+    <div class="card muted" style="font-size: 13px; line-height: 1.6;">
+      <p><strong>1. Total protein 1.6–2.2 g/kg/day.</strong> Beyond ~1.8 g/kg the muscle-growth curve flattens. We sit at 1.9 g/kg — safe upper end. <span style="color:var(--muted);">(Morton 2018 meta · 49 studies)</span></p>
+      <p style="margin-top: 8px;"><strong>2. Distribute protein across 4–5 meals at 30–40g each.</strong> 24-hr MPS is higher with even spacing than skewed bolus. Each meal needs ≥2.5g leucine (≈30g animal protein). <span style="color:var(--muted);">(Schoenfeld 2018 meta · Areta 2013)</span></p>
+      <p style="margin-top: 8px;"><strong>3. Pre-sleep slow-release protein (30–40g casein) boosts overnight MPS ~22%.</strong> Cottage cheese, Greek yogurt, or casein shake. <span style="color:var(--muted);">(Trommelen 2016 · Snijders 2015)</span></p>
+      <p style="margin-top: 8px;"><strong>4. Carb floor 4 g/kg/day for hypertrophy + activity.</strong> Below 280g you'll feel boxing performance drop within ~5 days. <span style="color:var(--muted);">(Helms 2014)</span></p>
+      <p style="margin-top: 8px;"><strong>5. Surplus +250–400 kcal, gain 0.25–0.5 lb/week.</strong> Faster gain = mostly fat. <span style="color:var(--muted);">(Iraki/Helms 2019)</span></p>
+      <p style="margin-top: 8px;"><strong>6. Creatine 5 g/day → +2–4 lb LBM in 8 weeks.</strong> Most-validated supplement in human nutrition. <span style="color:var(--muted);">(Kreider 2017 · ISSN position stand)</span></p>
+    </div>
+
+    <h2>Daily timeline (lift day)</h2>
+    <div class="card" style="font-size: 14px;">
+      <table style="margin: 0;">
+        <tr><th>Time</th><th>Intake</th><th>Why</th></tr>
+        <tr><td>Wake</td><td>1 scoop Perfect Amino + water</td><td>Breaks fast w/ usable AA, no kcal</td></tr>
+        <tr><td>~7–9 AM</td><td><strong>Meal 1: Eggs &amp; oats</strong></td><td>30g protein anchor, slow carbs</td></tr>
+        <tr><td>~12–1 PM</td><td><strong>Meal 2: Chicken rice bowl</strong></td><td>Biggest protein hit + main carb load</td></tr>
+        <tr><td>~3–4 PM</td><td><strong>Meal 3: Yogurt parfait</strong> <em>(pre-workout if PM lift)</em></td><td>Fast carbs + 25g protein</td></tr>
+        <tr><td>~7–8 PM</td><td><strong>Meal 4: Beef &amp; sweet potato</strong></td><td>Post-workout / dinner</td></tr>
+        <tr><td>~10–11 PM</td><td>1 scoop Perfect Amino + cottage cheese (1 cup) + 1 oz almonds</td><td>Slow casein — overnight MPS</td></tr>
+      </table>
+    </div>
+
+    <h2>The 4 staple meals</h2>
+
+    <div class="meal">
+      <div class="meal-head">
+        <div class="meal-name">1 · Eggs &amp; oats</div>
+        <div class="meal-macros">640 kcal · 30p / 75c / 25f</div>
+      </div>
+      <div class="meal-ing">4 whole eggs · 1 cup rolled oats (dry) · 1 banana · 1 tbsp peanut butter · cinnamon · pinch salt</div>
+    </div>
+
+    <div class="meal">
+      <div class="meal-head">
+        <div class="meal-name">2 · Chicken rice bowl</div>
+        <div class="meal-macros">750 kcal · 50p / 90c / 18f</div>
+      </div>
+      <div class="meal-ing">8 oz chicken thigh · 1.5 cup cooked jasmine rice · 1 cup broccoli · soy sauce + sesame oil + sriracha</div>
+    </div>
+
+    <div class="meal">
+      <div class="meal-head">
+        <div class="meal-name">3 · Greek yogurt parfait</div>
+        <div class="meal-macros">370 kcal · 25p / 50c / 6f</div>
+      </div>
+      <div class="meal-ing">1.5 cups 0% Greek yogurt · 1/3 cup low-sugar granola · 1/2 cup berries · 1 tbsp honey</div>
+    </div>
+
+    <div class="meal">
+      <div class="meal-head">
+        <div class="meal-name">4 · Beef &amp; sweet potato</div>
+        <div class="meal-macros">520 kcal · 40p / 50c / 18f</div>
+      </div>
+      <div class="meal-ing">6 oz 90/10 lean ground beef · 1 large sweet potato · 2 cups spinach · olive oil + garlic + black pepper</div>
+    </div>
+
+    <div class="meal" style="border-style: dashed;">
+      <div class="meal-head">
+        <div class="meal-name">5 · Pre-sleep stack</div>
+        <div class="meal-macros">340 kcal · 25p / 12c / 17f</div>
+      </div>
+      <div class="meal-ing">1 cup cottage cheese (4%) · 1 oz almonds · 1 scoop Perfect Amino in water</div>
+    </div>
+
+    <p style="font-size: 12px; color: var(--muted); margin-top: 6px;">
+      <strong>Daily total:</strong> ~145g protein · ~278g carbs · ~84g fat · ~2,620 kcal.
+      Adjust portion of meal 4 (beef + sweet potato) to dial total kcal up or down based on weekly BW trend.
+    </p>
+
+    <h2>Supplement stack</h2>
+    <div class="card muted">
+      <table>
+        <tr><th>Supplement</th><th>Dose</th><th>When</th><th>Why</th></tr>
+        <tr><td>Perfect Amino</td><td>2 scoops/day</td><td>Wake + pre-sleep</td><td>EAAs ~99% utilization. Fasted MPS protection.</td></tr>
+        <tr><td>Creatine monohydrate</td><td>5 g/day</td><td>Any time, with food</td><td>Most-validated muscle supplement. +2–4 lb LBM in 8 wk.</td></tr>
+        <tr><td>Fish oil (EPA+DHA)</td><td>2–3 g EPA+DHA/day</td><td>With a meal</td><td>Reduces soreness, supports MPS, joint health for boxing.</td></tr>
+        <tr><td>Vitamin D3</td><td>2,000–4,000 IU/day</td><td>Morning w/ fat</td><td>Indoor coach risk. Boosts T, immune, bone.</td></tr>
+        <tr><td>Magnesium glycinate</td><td>300–400 mg</td><td>Pre-sleep</td><td>Sleep quality, recovery, cramping prevention.</td></tr>
+      </table>
+      <p style="font-size: 12px; color: var(--muted); margin-top: 8px;">Skip whey if you'd rather. Perfect Amino + cottage cheese covers the leucine threshold for the bookend doses.</p>
+    </div>
+
+    <h2>Grocery staples (weekly)</h2>
+    <div class="card muted">
+      <table>
+        <tr><th>Protein</th><td>Eggs · chicken thighs · 90/10 ground beef · 0% Greek yogurt · 4% cottage cheese</td></tr>
+        <tr><th>Carbs</th><td>Rolled oats · jasmine rice · sweet potatoes · bananas · berries · low-sugar granola · honey</td></tr>
+        <tr><th>Fats</th><td>Peanut butter · olive oil · almonds</td></tr>
+        <tr><th>Veg + aromatic</th><td>Broccoli · spinach · garlic · soy sauce · sesame oil · sriracha · cinnamon · black pepper</td></tr>
+        <tr><th>Supplements</th><td>Perfect Amino · creatine · fish oil · D3 · magnesium</td></tr>
+      </table>
+    </div>
+
+    <h2>Adjustment rules</h2>
+    <div class="card muted" style="font-size: 14px;">
+      <p><strong>Weekly avg BW moved &lt; 0.25 lb</strong> + protein hit → <strong>+200 kcal</strong> (mostly carbs — extra ½ cup rice, extra banana)</p>
+      <p style="margin-top: 8px;"><strong>Weekly avg BW moved &gt; 0.75 lb</strong> → <strong>−150 kcal</strong> (smaller beef portion, drop the almonds for the night)</p>
+      <p style="margin-top: 8px;"><strong>Boxing feels flat 2+ wks</strong> → check carbs ≥ 280 g/day. Add a banana pre-bag.</p>
+      <p style="margin-top: 8px;"><strong>Sleep dropping</strong> → magnesium glycinate up to 400 mg, push pre-sleep meal earlier (≥90 min before bed).</p>
+    </div>
+  </div>
 </div>
 
-<!-- Floating record button -->
-<button class="record-fab" id="record-fab" aria-label="Log workout">
+<!-- BOTTOM TAB BAR -->
+<nav class="tabbar">
+  <button data-tab="today" class="active">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13l2-2 7 7 9-9 2 2-11 11z" stroke="currentColor" stroke-width="0" /><path d="M12 2L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6l-8-4z" /></svg>
+    Today
+  </button>
+  <button data-tab="program">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM5 5h6v6H5V5zm0 8h6v6H5v-6zm14 6h-6v-6h6v6zm0-8h-6V5h6v6z"/></svg>
+    Program
+  </button>
+  <button data-tab="diet">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 9V2H9v7H7V2H5v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C13.34 12.84 15 11.12 15 9V2h-2v7h-2zM18 4v8h2v9h2V2c-2.21 0-4 1.79-4 4z"/></svg>
+    Diet
+  </button>
+</nav>
+
+<!-- Recorder FAB -->
+<button class="record-fab" id="record-fab" aria-label="Log">
   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
   <span class="badge" id="record-badge"></span>
 </button>
@@ -937,8 +652,13 @@
   <div class="recorder-card">
     <button class="recorder-close" id="recorder-close" aria-label="Close">×</button>
     <div class="recorder-handle"></div>
-    <div class="recorder-title">Log Workout</div>
-    <div class="recorder-hint">Say session, BW, sleep, auto-reg, then each lift with sets × reps × RIR.</div>
+    <div class="recorder-title" id="recorder-title">Log Workout</div>
+    <div class="recorder-hint" id="recorder-hint">Say session, BW, sleep, then each lift with sets × reps × RIR.</div>
+
+    <div class="mode-toggle">
+      <button id="mode-workout" class="active">Workout</button>
+      <button id="mode-meal">Meal</button>
+    </div>
 
     <div id="perm-error" class="perm-error" hidden>
       Microphone access blocked. Enable in iOS Settings → Safari → Camera/Microphone.
@@ -952,59 +672,270 @@
     </div>
 
     <div id="preview-section" hidden>
-      <div class="recorder-preview">
-        <audio id="preview-audio" controls></audio>
-      </div>
+      <div class="recorder-preview"><audio id="preview-audio" controls></audio></div>
       <div class="recorder-actions">
         <button class="btn-secondary" id="btn-discard">Re-record</button>
-        <button class="btn-primary" id="btn-save">Save & Sync</button>
+        <button class="btn-primary" id="btn-save">Save &amp; Sync</button>
       </div>
     </div>
 
     <div class="queue-section">
-      <h4>Recent Recordings</h4>
+      <h3 style="margin-bottom: 8px;">Recent</h3>
       <div id="queue-list">
-        <div style="font-size: 13px; color: var(--muted); padding: 8px 0;">No recordings yet.</div>
+        <div style="font-size: 13px; color: var(--muted); padding: 6px 0;">No recordings yet.</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Install banner: shown only in Safari (iOS) when not yet installed -->
+<!-- Install banner -->
 <div id="install-banner">
   <button class="close" aria-label="Close" onclick="dismissInstall()">×</button>
   <strong>Install on Home Screen</strong>
-  <small>Tap <span class="arrow">⬆︎</span> Share, then <strong style="display:inline">Add to Home Screen</strong></small>
+  <small>Tap ⬆︎ Share, then <strong style="display:inline">Add to Home Screen</strong></small>
 </div>
 
 <script>
-  // Detect iOS Safari (not Chrome on iOS, not standalone-already)
+  // ───────── Helpers ─────────
+  function el(tag, opts) {
+    const e = document.createElement(tag);
+    if (opts) {
+      if (opts.text) e.textContent = opts.text;
+      if (opts.cls) e.className = opts.cls;
+      if (opts.attrs) Object.entries(opts.attrs).forEach(([k,v]) => e.setAttribute(k, v));
+    }
+    return e;
+  }
+  function fmtRelDate(iso) {
+    if (!iso) return '';
+    const d = new Date(iso + 'T00:00:00');
+    const today = new Date(); today.setHours(0,0,0,0);
+    const days = Math.round((today - d) / 86400000);
+    if (days === 0) return 'today';
+    if (days === 1) return 'yesterday';
+    if (days < 7)   return `${days}d ago`;
+    if (days < 30)  return `${Math.round(days/7)}w ago`;
+    return `${Math.round(days/30)}mo ago`;
+  }
+
+  // ───────── Tabs ─────────
+  const tabbar = document.querySelector('.tabbar');
+  tabbar.addEventListener('click', e => {
+    const btn = e.target.closest('button[data-tab]');
+    if (!btn) return;
+    const target = btn.dataset.tab;
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === `tab-${target}`));
+    document.querySelectorAll('.tabbar button').forEach(b => b.classList.toggle('active', b === btn));
+    window.scrollTo({ top: 0 });
+  });
+
+  // ───────── Today eyebrow ─────────
+  document.getElementById('today-eyebrow').textContent =
+    'TODAY · ' + new Date().toLocaleDateString([], { weekday: 'long' }).toUpperCase();
+
+  // ───────── Install banner ─────────
   (function() {
     const ua = navigator.userAgent;
     const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
-    const isStandalone = window.navigator.standalone === true ||
-                         window.matchMedia('(display-mode: standalone)').matches;
+    const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
     const isSafari = isIOS && /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua);
-    const dismissed = localStorage.getItem('install-dismissed');
-
-    if (isSafari && !isStandalone && !dismissed) {
-      // Show banner after 2 sec so user sees content first
-      setTimeout(() => {
-        document.getElementById('install-banner').classList.add('visible');
-      }, 1500);
-    }
-
-    // Also hide print button when running as installed PWA
-    if (isStandalone) {
-      const actions = document.querySelector('.actions');
-      if (actions) actions.style.display = 'none';
+    if (isSafari && !isStandalone && !localStorage.getItem('install-dismissed')) {
+      setTimeout(() => document.getElementById('install-banner').classList.add('visible'), 1500);
     }
   })();
-
   function dismissInstall() {
     localStorage.setItem('install-dismissed', '1');
     document.getElementById('install-banner').classList.remove('visible');
   }
+
+  // ───────── Whoop briefing ─────────
+  const callText = {
+    train_as_planned: { text: "Train as planned",       cls: "green"  },
+    cap_intensity:    { text: "Cap top sets at RIR 2",  cls: "yellow" },
+    reduce_volume:    { text: "Reduce volume 30%",      cls: "orange" },
+    skip_lift:        { text: "Skip — mobility only",   cls: "red"    },
+    unknown:          { text: "—",                       cls: ""       },
+  };
+  async function loadBriefing() {
+    const briefing = document.getElementById('briefing');
+    try {
+      const r = await fetch('readiness.json?t=' + Date.now(), { cache: 'no-store' });
+      if (!r.ok) return;
+      const d = await r.json();
+
+      const recScore = d.recovery && d.recovery.score;
+      const recCall = (d.recovery && d.recovery.call) || 'unknown';
+      const recEl = document.getElementById('b-recovery');
+      recEl.replaceChildren();
+      recEl.append(
+        el('span', { cls: 'b-num', text: recScore != null ? String(Math.round(recScore)) : '—' }),
+        el('span', { cls: 'b-unit', text: '%' })
+      );
+      const callEl = document.getElementById('b-call');
+      const c = callText[recCall] || callText.unknown;
+      callEl.textContent = c.text;
+      callEl.className = 'briefing-call ' + c.cls;
+
+      const hrv = d.recovery && d.recovery.hrv_ms;
+      const trend = d.recovery && d.recovery.hrv_trend_pct;
+      let hrvText = hrv != null ? `${Math.round(hrv)} ms` : '—';
+      if (trend != null) hrvText += `  (${trend > 0 ? '+' : ''}${trend}%)`;
+      document.getElementById('b-hrv').textContent = hrvText;
+
+      const sleepHrs = d.sleep && d.sleep.hours;
+      let sleepText = sleepHrs != null ? `${sleepHrs}h` : '—';
+      document.getElementById('b-sleep').textContent = sleepText;
+
+      const kcal = d.nutrition && d.nutrition.kcal_target;
+      document.getElementById('b-kcal').textContent = kcal != null ? `${kcal.toLocaleString()}` : '—';
+
+      if (d.updated_at) {
+        const updated = new Date(d.updated_at);
+        const mins = Math.round((Date.now() - updated.getTime()) / 60000);
+        document.getElementById('briefing-updated').textContent =
+          mins < 60 ? `${mins}m ago` : `${Math.round(mins/60)}h ago`;
+      }
+      briefing.hidden = false;
+    } catch (err) {
+      // Stay hidden on error
+    }
+  }
+
+  // ───────── Today's session (auto-rotation) ─────────
+  const SESSIONS = ['Lower A', 'Upper A', 'Lower B', 'Upper B'];
+  const SESSION_META = {
+    'Lower A': { color: 'lower', loc: 'Gym', subtitle: 'Quad emphasis · 55–65 min' },
+    'Upper A': { color: 'upper', loc: 'Apt', subtitle: 'BB push + ring pull · 60–70 min' },
+    'Lower B': { color: 'lower', loc: 'Apt', subtitle: 'Hinge emphasis · 50–60 min' },
+    'Upper B': { color: 'upper', loc: 'Gym', subtitle: 'Pulldown + DB + cable · 60–70 min' },
+  };
+
+  function pickRecommendedSession(lifts) {
+    // Find the session whose lifts have the OLDEST max-date
+    const sessionLastDate = {};
+    SESSIONS.forEach(s => sessionLastDate[s] = '0000-00-00');
+
+    Object.values(lifts || {}).forEach(lift => {
+      if (!lift.last_session) return;
+      const sess = lift.session;
+      if (sess && lift.last_session.date > sessionLastDate[sess]) {
+        sessionLastDate[sess] = lift.last_session.date;
+      }
+    });
+
+    // Pick session with OLDEST date (means done longest ago)
+    let oldest = SESSIONS[0];
+    SESSIONS.forEach(s => {
+      if (sessionLastDate[s] < sessionLastDate[oldest]) oldest = s;
+    });
+    return { session: oldest, lastDate: sessionLastDate[oldest] };
+  }
+
+  function renderTodaySession(sessionName, lifts) {
+    const meta = SESSION_META[sessionName];
+    const card = el('div', { cls: `session-card ${meta.color}` });
+    const tag = el('div', { cls: 'session-rec-tag', text: 'Recommended for today' });
+    const head = el('div', { cls: 'session-card-header' });
+    const nameEl = el('div', { cls: 'session-name', text: sessionName });
+    head.append(nameEl);
+    const loc = el('div', { cls: 'session-loc', text: meta.subtitle + ' · ' + meta.loc });
+    card.append(tag, head, loc);
+
+    // Lift list
+    const ol = el('ol', { cls: 'lifts' });
+    Object.entries(lifts || {}).forEach(([name, data]) => {
+      if (data.session !== sessionName) return;
+      const li = el('li', { cls: 'lift' });
+      const left = el('div');
+      left.append(el('div', { cls: 'lift-name', text: name }));
+      const repRange = data.rep_range ? `${data.rep_range[0]}–${data.rep_range[1]}` : '';
+      const rir = data.rir_target ? `RIR ${data.rir_target[0]}${data.rir_target[1] !== data.rir_target[0] ? '–'+data.rir_target[1] : ''}` : '';
+      const presc = el('div', { cls: 'lift-prescription' });
+      presc.textContent = `${repRange} `;
+      if (rir) {
+        const rirSpan = el('span', { cls: 'rir', text: rir });
+        presc.append(rirSpan);
+      }
+      li.append(left, presc);
+
+      // Last → Today overlay
+      if (data.last_session || data.next_target) {
+        const wrap = el('div', { cls: 'lift-history' });
+        if (data.last_session) {
+          const ls = data.last_session;
+          const lastLine = el('div');
+          lastLine.append(el('span', { cls: 'label-tag', text: 'Last:' }));
+          lastLine.append(el('span', { cls: 'last-line', text: ls.top_set }));
+          const metaParts = [];
+          if (ls.rir != null) metaParts.push(`RIR ${ls.rir}`);
+          metaParts.push(fmtRelDate(ls.date));
+          lastLine.append(el('span', { cls: 'last-meta', text: ' · ' + metaParts.join(' · ') }));
+          wrap.append(lastLine);
+        }
+        if (data.next_target) {
+          const tgt = el('div', { cls: 'target-line' });
+          tgt.append(el('span', { cls: 'label-tag', text: '→ Today:' }));
+          tgt.append(document.createTextNode(' ' + data.next_target));
+          wrap.append(tgt);
+        }
+        li.append(wrap);
+      }
+      ol.append(li);
+    });
+    card.append(ol);
+
+    const container = document.getElementById('today-session');
+    container.replaceChildren(card);
+  }
+
+  function renderEmptySession() {
+    const container = document.getElementById('today-session');
+    container.replaceChildren(el('div', { cls: 'empty-msg', text: 'No lift history yet. Start with Lower A — Quads.' }));
+  }
+
+  // ───────── Bodyweight ─────────
+  function renderBW(bw) {
+    if (!bw || bw.current == null) return;
+    document.getElementById('bw-current').textContent = bw.current.toFixed(1);
+    const trendEl = document.getElementById('bw-trend');
+    const t = bw.trend_7d;
+    if (t == null) { trendEl.textContent = '—'; }
+    else {
+      const sign = t > 0 ? '+' : '';
+      trendEl.textContent = `${sign}${t.toFixed(1)} lb`;
+      if (Math.abs(t) < 0.1) trendEl.className = 'trend flat';
+      else if (t > 1) trendEl.className = 'trend fast';
+      else trendEl.className = 'trend up';
+    }
+    if (bw.current_date) document.getElementById('bw-updated').textContent = fmtRelDate(bw.current_date);
+    document.getElementById('bw-strip').hidden = false;
+  }
+
+  // ───────── Lifts orchestrator ─────────
+  async function loadLifts() {
+    try {
+      const r = await fetch('lifts.json?t=' + Date.now(), { cache: 'no-store' });
+      if (!r.ok) { renderEmptySession(); return; }
+      const data = await r.json();
+
+      renderBW(data.bodyweight);
+
+      const rec = pickRecommendedSession(data.lifts);
+      if (rec.lastDate === '0000-00-00') {
+        renderEmptySession();
+      } else {
+        renderTodaySession(rec.session, data.lifts);
+      }
+    } catch (e) {
+      renderEmptySession();
+    }
+  }
+
+  // ───────── Today macros (placeholder; from log.md eventually) ─────────
+  // For now: zeros until macros logging is wired up. Builds visible structure.
+
+  loadBriefing();
+  loadLifts();
 
   // ───────── Voice Recorder ─────────
   const QUEUE_KEY = 'workout-recordings-v1';
@@ -1014,6 +945,7 @@
   let recordedBlob = null;
   let timerInterval = null;
   let startedAt = 0;
+  let mode = 'workout'; // or 'meal'
 
   const fab = document.getElementById('record-fab');
   const overlay = document.getElementById('recorder-overlay');
@@ -1027,48 +959,50 @@
   const permError = document.getElementById('perm-error');
   const queueList = document.getElementById('queue-list');
   const badge = document.getElementById('record-badge');
+  const titleEl = document.getElementById('recorder-title');
+  const hintEl = document.getElementById('recorder-hint');
+  const modeWorkout = document.getElementById('mode-workout');
+  const modeMeal = document.getElementById('mode-meal');
 
-  function getQueue() {
-    try { return JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]'); }
-    catch { return []; }
-  }
-  function setQueue(q) {
-    localStorage.setItem(QUEUE_KEY, JSON.stringify(q));
-    renderQueue();
-  }
-  function el(tag, opts) {
-    const e = document.createElement(tag);
-    if (opts) {
-      if (opts.text) e.textContent = opts.text;
-      if (opts.cls) e.className = opts.cls;
-      if (opts.attrs) Object.entries(opts.attrs).forEach(([k,v]) => e.setAttribute(k, v));
+  function setMode(m) {
+    mode = m;
+    modeWorkout.classList.toggle('active', m === 'workout');
+    modeMeal.classList.toggle('active', m === 'meal');
+    micBtn.classList.toggle('diet', m === 'meal');
+    fab.classList.toggle('diet-mode', m === 'meal');
+    if (m === 'workout') {
+      titleEl.textContent = 'Log Workout';
+      hintEl.textContent = 'Say session, BW, sleep, then each lift with sets × reps × RIR.';
+    } else {
+      titleEl.textContent = 'Log Meal';
+      hintEl.textContent = 'Say what you ate. e.g. "chicken bowl, banana, scoop of whey."';
     }
-    return e;
   }
+  modeWorkout.addEventListener('click', () => setMode('workout'));
+  modeMeal.addEventListener('click', () => setMode('meal'));
+
+  function getQueue() { try { return JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]'); } catch { return []; } }
+  function setQueue(q) { localStorage.setItem(QUEUE_KEY, JSON.stringify(q)); renderQueue(); }
   function renderQueue() {
     const q = getQueue();
     const pending = q.filter(r => !r.synced).length;
     badge.textContent = pending > 0 ? String(pending) : '';
-
     queueList.replaceChildren();
     if (!q.length) {
-      const empty = el('div', { text: 'No recordings yet.', attrs: { style: 'font-size: 13px; color: var(--muted); padding: 8px 0;' } });
-      queueList.appendChild(empty);
+      queueList.append(el('div', { text: 'No recordings yet.', attrs: { style: 'font-size: 13px; color: var(--muted); padding: 6px 0;' } }));
       return;
     }
-    q.slice(-8).reverse().forEach(r => {
+    q.slice(-6).reverse().forEach(r => {
       const item = el('div', { cls: 'queue-item' });
       const left = el('div');
-      const ts = el('div', { text: new Date(r.ts).toLocaleString([], {dateStyle:'short', timeStyle:'short'}) });
-      const meta = el('div', { cls: 'meta', text: `${r.duration}s · ${(r.size/1024).toFixed(0)} KB` });
-      left.appendChild(ts);
-      left.appendChild(meta);
+      left.append(el('div', { text: new Date(r.ts).toLocaleString([], {dateStyle:'short', timeStyle:'short'}) }));
+      left.append(el('div', { cls: 'meta', text: `${r.duration}s · ${(r.size/1024).toFixed(0)} KB · ${r.mode || 'workout'}` }));
       const status = el('span', { cls: `status ${r.synced ? 'synced' : 'pending'}`, text: r.synced ? '✓ synced' : 'pending' });
-      item.appendChild(left);
-      item.appendChild(status);
-      queueList.appendChild(item);
+      item.append(left, status);
+      queueList.append(item);
     });
   }
+  renderQueue();
 
   function openModal() { overlay.classList.add('open'); resetUI(); }
   function closeModal() {
@@ -1076,7 +1010,6 @@
     if (mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
     if (mediaStream) { mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
   }
-
   function resetUI() {
     micBtn.classList.remove('recording');
     timerEl.classList.add('idle');
@@ -1087,36 +1020,22 @@
     chunks = [];
     renderQueue();
   }
-
   function fmtTime(secs) {
     const m = Math.floor(secs / 60).toString().padStart(2, '0');
     const s = Math.floor(secs % 60).toString().padStart(2, '0');
     return `${m}:${s}`;
   }
-
   function pickMime() {
     const candidates = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg'];
-    for (const m of candidates) {
-      if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m)) return m;
-    }
+    for (const m of candidates) if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m)) return m;
     return '';
   }
-
   async function startRecording() {
-    try {
-      mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    } catch (err) {
-      permError.hidden = false;
-      console.error(err);
-      return;
-    }
+    try { mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+    catch (err) { permError.hidden = false; return; }
     const mime = pickMime();
-    try {
-      mediaRecorder = mime ? new MediaRecorder(mediaStream, { mimeType: mime })
-                           : new MediaRecorder(mediaStream);
-    } catch (err) {
-      mediaRecorder = new MediaRecorder(mediaStream);
-    }
+    try { mediaRecorder = mime ? new MediaRecorder(mediaStream, { mimeType: mime }) : new MediaRecorder(mediaStream); }
+    catch { mediaRecorder = new MediaRecorder(mediaStream); }
     chunks = [];
     mediaRecorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
     mediaRecorder.onstop = () => {
@@ -1138,47 +1057,35 @@
       timerEl.textContent = fmtTime((Date.now() - startedAt) / 1000);
     }, 200);
   }
-
   function stopRecording() {
     if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
     if (mediaStream) { mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
   }
-
   micBtn.addEventListener('click', () => {
-    if (mediaRecorder && mediaRecorder.state === 'recording') {
-      stopRecording();
-    } else {
-      startRecording();
-    }
+    if (mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+    else startRecording();
   });
-
   fab.addEventListener('click', openModal);
   closeBtn.addEventListener('click', closeModal);
   overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
-  btnDiscard.addEventListener('click', () => { resetUI(); });
-
+  btnDiscard.addEventListener('click', () => resetUI());
   btnSave.addEventListener('click', async () => {
     if (!recordedBlob) return;
     const ts = Date.now();
     const duration = Math.round((Date.now() - startedAt) / 1000);
-    const ext = (recordedBlob.type.includes('mp4')) ? 'm4a'
-              : (recordedBlob.type.includes('webm')) ? 'webm'
-              : (recordedBlob.type.includes('ogg')) ? 'ogg' : 'm4a';
-    const filename = `workout-${new Date(ts).toISOString().replace(/[:.]/g,'-').slice(0,19)}.${ext}`;
+    const ext = recordedBlob.type.includes('mp4') ? 'm4a' : recordedBlob.type.includes('webm') ? 'webm' : recordedBlob.type.includes('ogg') ? 'ogg' : 'm4a';
+    // Filename prefix encodes the mode so the watcher can route
+    const prefix = mode === 'meal' ? 'meal' : 'workout';
+    const filename = `${prefix}-${new Date(ts).toISOString().replace(/[:.]/g,'-').slice(0,19)}.${ext}`;
     const file = new File([recordedBlob], filename, { type: recordedBlob.type });
-
     const q = getQueue();
-    q.push({ ts, duration, size: recordedBlob.size, filename, synced: false });
+    q.push({ ts, duration, size: recordedBlob.size, filename, mode, synced: false });
     setQueue(q);
 
     let shared = false;
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      try {
-        await navigator.share({ files: [file], title: 'Workout log', text: filename });
-        shared = true;
-      } catch (e) {
-        if (e.name !== 'AbortError') console.error(e);
-      }
+      try { await navigator.share({ files: [file], title: prefix + ' log', text: filename }); shared = true; }
+      catch (e) { if (e.name !== 'AbortError') console.error(e); }
     }
     if (!shared) {
       const url = URL.createObjectURL(recordedBlob);
@@ -1186,172 +1093,12 @@
       a.href = url; a.download = filename; a.click();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
-
     const q2 = getQueue();
     const last = q2[q2.length - 1];
     if (last) last.synced = true;
     setQueue(q2);
     resetUI();
   });
-
-  renderQueue();
-
-  // ───────── Briefing card (Whoop) ─────────
-  const callText = {
-    train_as_planned: { text: "Train as planned",    cls: "green"  },
-    cap_intensity:    { text: "Cap top sets at RIR 2", cls: "yellow" },
-    reduce_volume:    { text: "Reduce volume 30%",   cls: "orange" },
-    skip_lift:        { text: "Skip — mobility only", cls: "red"    },
-    unknown:          { text: "—",                   cls: ""       },
-  };
-
-  async function loadBriefing() {
-    const briefing = document.getElementById('briefing');
-    try {
-      const r = await fetch('readiness.json?t=' + Date.now(), { cache: 'no-store' });
-      if (!r.ok) throw new Error('no readiness.json');
-      const d = await r.json();
-
-      const recScore = d.recovery && d.recovery.score;
-      const recCall = (d.recovery && d.recovery.call) || 'unknown';
-
-      document.getElementById('b-recovery').replaceChildren();
-      const numEl = el('span', { cls: 'b-num', text: recScore != null ? String(Math.round(recScore)) : '—' });
-      const unitEl = el('span', { cls: 'b-unit', text: '%' });
-      document.getElementById('b-recovery').append(numEl, unitEl);
-
-      const callEl = document.getElementById('b-call');
-      const c = callText[recCall] || callText.unknown;
-      callEl.textContent = c.text;
-      callEl.className = 'briefing-call ' + c.cls;
-
-      // HRV
-      const hrv = d.recovery && d.recovery.hrv_ms;
-      const trend = d.recovery && d.recovery.hrv_trend_pct;
-      let hrvText = hrv != null ? `${Math.round(hrv)} ms` : '—';
-      if (trend != null) hrvText += `  (${trend > 0 ? '+' : ''}${trend}%)`;
-      document.getElementById('b-hrv').textContent = hrvText;
-
-      // Sleep
-      const sleepHrs = d.sleep && d.sleep.hours;
-      const sleepPerf = d.sleep && d.sleep.performance_pct;
-      let sleepText = sleepHrs != null ? `${sleepHrs}h` : '—';
-      if (sleepPerf != null) sleepText += `  ${Math.round(sleepPerf)}%`;
-      document.getElementById('b-sleep').textContent = sleepText;
-
-      // Kcal
-      const kcal = d.nutrition && d.nutrition.kcal_target;
-      document.getElementById('b-kcal').textContent = kcal != null ? `${kcal.toLocaleString()}` : '—';
-
-      // Day label
-      const today = new Date();
-      const dayName = today.toLocaleDateString([], { weekday: 'long' });
-      document.getElementById('briefing-day').textContent = `TODAY · ${dayName.toUpperCase()}`;
-
-      // Updated timestamp
-      if (d.updated_at) {
-        const updated = new Date(d.updated_at);
-        const now = new Date();
-        const mins = Math.round((now - updated) / 60000);
-        const ago = mins < 60 ? `${mins}m ago` : `${Math.round(mins/60)}h ago`;
-        document.getElementById('briefing-updated').textContent = ago;
-      }
-
-      briefing.hidden = false;
-    } catch (err) {
-      // Show briefing in "not connected" state only on first run check
-      // For now, keep hidden if no data — avoids clutter.
-      briefing.hidden = true;
-    }
-  }
-  loadBriefing();
-
-  // ───────── Lifts overlay (Last → Today) ─────────
-  function fmtRelDate(iso) {
-    if (!iso) return '';
-    const d = new Date(iso + 'T00:00:00');
-    const today = new Date(); today.setHours(0,0,0,0);
-    const days = Math.round((today - d) / 86400000);
-    if (days === 0) return 'today';
-    if (days === 1) return 'yesterday';
-    if (days < 7)   return `${days}d ago`;
-    if (days < 30)  return `${Math.round(days/7)}w ago`;
-    return `${Math.round(days/30)}mo ago`;
-  }
-
-  async function loadLifts() {
-    try {
-      const r = await fetch('lifts.json?t=' + Date.now(), { cache: 'no-store' });
-      if (!r.ok) return;
-      const data = await r.json();
-
-      // Bodyweight strip
-      const bw = data.bodyweight;
-      if (bw && bw.current != null) {
-        document.getElementById('bw-current').textContent = bw.current.toFixed(1);
-        const trendEl = document.getElementById('bw-trend');
-        const t = bw.trend_7d;
-        if (t == null) {
-          trendEl.textContent = '—';
-        } else {
-          const sign = t > 0 ? '+' : '';
-          trendEl.textContent = `${sign}${t.toFixed(1)} lb`;
-          if (Math.abs(t) < 0.1) trendEl.className = 'trend flat';
-          else if (t > 1) trendEl.className = 'trend fast';
-          else trendEl.className = 'trend up';
-        }
-        if (bw.current_date) {
-          document.getElementById('bw-updated').textContent = fmtRelDate(bw.current_date);
-        }
-        document.getElementById('bw-strip').hidden = false;
-      }
-
-      // Inject Last + Today overlays on each lift card
-      const liftMap = data.lifts || {};
-      document.querySelectorAll('.lift').forEach(li => {
-        const nameEl = li.querySelector('.lift-name');
-        if (!nameEl) return;
-        const liftName = nameEl.textContent.trim();
-        const liftData = liftMap[liftName];
-        if (!liftData) return;
-
-        // Skip if already injected
-        if (li.querySelector('.lift-history')) return;
-
-        const wrap = el('div', { cls: 'lift-history' });
-
-        if (liftData.last_session) {
-          const ls = liftData.last_session;
-          const lastLine = el('div');
-          const main = el('span', { cls: 'last-line', text: ls.top_set });
-          const meta = el('span', { cls: 'last-meta' });
-          const metaParts = [];
-          if (ls.rir != null) metaParts.push(`RIR ${ls.rir}`);
-          metaParts.push(fmtRelDate(ls.date));
-          meta.textContent = ' · ' + metaParts.join(' · ');
-          lastLine.append(el('span', { text: 'Last: ', attrs: { style: 'color:var(--muted);font-weight:600;font-size:11px;letter-spacing:0.06em;text-transform:uppercase' } }));
-          lastLine.appendChild(main);
-          lastLine.appendChild(meta);
-          wrap.appendChild(lastLine);
-        }
-
-        if (liftData.next_target) {
-          const tgt = el('div', { cls: 'target-line', text: liftData.next_target });
-          wrap.appendChild(tgt);
-        }
-
-        // Inject after the lift's left content div (between name/detail and prescription)
-        // Append to the first child <div> (the left column with name + detail)
-        const leftCol = li.querySelector('div');
-        if (leftCol) leftCol.appendChild(wrap);
-        else li.appendChild(wrap);
-      });
-    } catch (e) {
-      console.warn('lifts.json fetch failed', e);
-    }
-  }
-  loadLifts();
 </script>
-
 </body>
 </html>
