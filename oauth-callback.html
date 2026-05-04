@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Whoop Authorized</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    background: #0a0a0a; color: white;
+    min-height: 100vh; margin: 0;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .card {
+    max-width: 540px; text-align: center;
+  }
+  .check {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: #2a6f4f; margin: 0 auto 24px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px;
+  }
+  h1 { font-size: 24px; margin-bottom: 8px; font-weight: 700; }
+  p { color: #aaa; font-size: 15px; line-height: 1.5; margin-bottom: 16px; }
+  .code-block {
+    background: #1a1a1a; border: 1px solid #333;
+    border-radius: 12px; padding: 20px;
+    margin: 24px 0; text-align: left;
+  }
+  .code-label {
+    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: #888; margin-bottom: 8px;
+  }
+  code {
+    display: block; word-break: break-all;
+    font-family: ui-monospace, "SF Mono", monospace;
+    font-size: 13px; color: #5ada85;
+    user-select: all; -webkit-user-select: all;
+    line-height: 1.5;
+  }
+  .copy-btn {
+    background: #c1121f; color: white; border: none;
+    padding: 12px 24px; border-radius: 999px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    margin-top: 8px;
+  }
+  .copy-btn:active { transform: scale(0.97); }
+  .error { color: #ff5266; }
+  .next {
+    margin-top: 24px; padding-top: 24px;
+    border-top: 1px solid #1f1f1f;
+    color: #888; font-size: 13px; text-align: left;
+  }
+  .next strong { color: white; }
+</style>
+</head>
+<body>
+<div class="card" id="content">
+  <div class="check">✓</div>
+  <h1>Whoop Authorized</h1>
+  <p>Copy the code below, then paste it into the terminal where the OAuth script is waiting.</p>
+
+  <div class="code-block">
+    <div class="code-label">Authorization Code</div>
+    <code id="code">Loading...</code>
+  </div>
+
+  <button class="copy-btn" id="copy-btn">Copy Code</button>
+
+  <div class="next">
+    <strong>What's happening:</strong> Whoop sent this code to confirm you authorized the app.
+    The code expires in 10 min. Paste it into your Mac's terminal where <code style="color:#aaa;display:inline">whoop_oauth.py</code>
+    is waiting, and it'll exchange the code for a permanent refresh token.
+  </div>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+  const error = params.get('error');
+  const codeEl = document.getElementById('code');
+
+  if (error) {
+    codeEl.classList.add('error');
+    codeEl.textContent = `Error: ${error} — ${params.get('error_description') || 'Authorization failed.'}`;
+    document.getElementById('copy-btn').style.display = 'none';
+  } else if (!code) {
+    codeEl.classList.add('error');
+    codeEl.textContent = 'No code in URL. Try the OAuth flow again.';
+    document.getElementById('copy-btn').style.display = 'none';
+  } else {
+    codeEl.textContent = code;
+    document.getElementById('copy-btn').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(code);
+        const btn = document.getElementById('copy-btn');
+        btn.textContent = '✓ Copied';
+        setTimeout(() => { btn.textContent = 'Copy Code'; }, 2000);
+      } catch (e) {
+        // Fallback: select the text
+        const range = document.createRange();
+        range.selectNodeContents(codeEl);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    });
+  }
+</script>
+</body>
+</html>
