@@ -71,6 +71,134 @@
   /* Hide install banner when running standalone */
   @media (display-mode: standalone) { #install-banner { display: none !important; } }
 
+  /* Recorder FAB + modal */
+  .record-fab {
+    position: fixed; right: 18px;
+    bottom: calc(24px + env(safe-area-inset-bottom));
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--accent); color: white; border: none;
+    box-shadow: 0 8px 24px rgba(193, 18, 31, 0.45);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 150; cursor: pointer;
+    transition: transform 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .record-fab:active { transform: scale(0.92); }
+  .record-fab svg { width: 28px; height: 28px; }
+  .record-fab .badge {
+    position: absolute; top: -4px; right: -4px;
+    background: var(--ink); color: white;
+    width: 22px; height: 22px; border-radius: 50%;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid var(--paper);
+  }
+  .record-fab .badge:empty { display: none; }
+
+  .recorder-overlay {
+    position: fixed; inset: 0;
+    background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 300; display: none;
+    align-items: flex-end; justify-content: center;
+  }
+  .recorder-overlay.open { display: flex; }
+  .recorder-card {
+    background: white; width: 100%; max-width: 480px;
+    border-radius: 24px 24px 0 0;
+    padding: 24px 24px calc(24px + env(safe-area-inset-bottom)) 24px;
+    animation: slideup 0.3s ease-out;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .recorder-handle {
+    width: 36px; height: 4px; background: var(--rule);
+    border-radius: 2px; margin: 0 auto 16px;
+  }
+  .recorder-title {
+    font-family: "New York", "Times New Roman", Georgia, serif;
+    font-weight: 700; font-size: 22px; margin-bottom: 4px;
+  }
+  .recorder-hint { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+  .recorder-mic-wrapper {
+    display: flex; flex-direction: column; align-items: center;
+    margin: 16px 0 24px;
+  }
+  .mic-btn {
+    width: 96px; height: 96px; border-radius: 50%;
+    background: var(--accent); color: white;
+    border: none; box-shadow: 0 8px 24px rgba(193, 18, 31, 0.35);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s ease;
+  }
+  .mic-btn svg { width: 40px; height: 40px; }
+  .mic-btn.recording {
+    background: var(--ink);
+    animation: pulse 1.2s infinite;
+  }
+  .mic-btn.recording svg { display: none; }
+  .mic-btn.recording::after {
+    content: ""; width: 28px; height: 28px;
+    background: var(--accent); border-radius: 4px;
+  }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 8px 24px rgba(10, 10, 10, 0.4); }
+    50% { box-shadow: 0 8px 24px rgba(193, 18, 31, 0.6), 0 0 0 12px rgba(193, 18, 31, 0.15); }
+  }
+  .timer {
+    font-variant-numeric: tabular-nums; font-size: 32px;
+    font-weight: 700; color: var(--ink);
+    margin-top: 16px; letter-spacing: 0.04em;
+  }
+  .timer.idle { color: var(--muted); }
+
+  .recorder-preview {
+    background: #f8f6f0; border-radius: 12px;
+    padding: 16px; margin-bottom: 16px;
+  }
+  .recorder-preview audio { width: 100%; }
+  .recorder-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .recorder-actions button {
+    padding: 14px; border-radius: 12px; border: none;
+    font-size: 15px; font-weight: 600; cursor: pointer;
+    font-family: inherit;
+  }
+  .btn-primary { background: var(--ink); color: white; }
+  .btn-secondary { background: #f0ede6; color: var(--ink); }
+  .btn-primary:active, .btn-secondary:active { transform: scale(0.97); }
+
+  .recorder-close {
+    position: absolute; top: 16px; right: 16px;
+    background: #f0ede6; border: none; width: 32px; height: 32px;
+    border-radius: 50%; font-size: 20px; line-height: 1;
+    color: var(--muted); cursor: pointer;
+  }
+
+  .queue-section { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--rule); }
+  .queue-section h4 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted); margin-bottom: 8px; font-weight: 700;
+  }
+  .queue-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid #f0ede6;
+    font-size: 13px;
+  }
+  .queue-item:last-child { border-bottom: none; }
+  .queue-item .meta { color: var(--muted); }
+  .queue-item .status {
+    font-size: 11px; padding: 2px 8px; border-radius: 999px;
+    text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700;
+  }
+  .queue-item .status.pending { background: #fcecc9; color: #8a5a00; }
+  .queue-item .status.synced { background: #d6ecd9; color: #245a2a; }
+
+  .perm-error {
+    background: #fbe9eb; border: 1px solid var(--accent);
+    color: var(--accent); border-radius: 12px;
+    padding: 12px 14px; font-size: 13px; margin: 12px 0;
+  }
+
   /* Hero */
   .hero { border-bottom: 2px solid var(--ink); padding-bottom: 32px; margin-bottom: 48px; }
   .eyebrow {
@@ -685,6 +813,50 @@
   <button class="btn" onclick="window.print()">Print / Save PDF</button>
 </div>
 
+<!-- Floating record button -->
+<button class="record-fab" id="record-fab" aria-label="Log workout">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+  <span class="badge" id="record-badge"></span>
+</button>
+
+<!-- Recorder modal -->
+<div class="recorder-overlay" id="recorder-overlay">
+  <div class="recorder-card">
+    <button class="recorder-close" id="recorder-close" aria-label="Close">×</button>
+    <div class="recorder-handle"></div>
+    <div class="recorder-title">Log Workout</div>
+    <div class="recorder-hint">Say session, BW, sleep, auto-reg, then each lift with sets × reps × RIR.</div>
+
+    <div id="perm-error" class="perm-error" hidden>
+      Microphone access blocked. Enable in iOS Settings → Safari → Camera/Microphone.
+    </div>
+
+    <div class="recorder-mic-wrapper">
+      <button class="mic-btn" id="mic-btn" aria-label="Start recording">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+      </button>
+      <div class="timer idle" id="timer">00:00</div>
+    </div>
+
+    <div id="preview-section" hidden>
+      <div class="recorder-preview">
+        <audio id="preview-audio" controls></audio>
+      </div>
+      <div class="recorder-actions">
+        <button class="btn-secondary" id="btn-discard">Re-record</button>
+        <button class="btn-primary" id="btn-save">Save & Sync</button>
+      </div>
+    </div>
+
+    <div class="queue-section">
+      <h4>Recent Recordings</h4>
+      <div id="queue-list">
+        <div style="font-size: 13px; color: var(--muted); padding: 8px 0;">No recordings yet.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Install banner: shown only in Safari (iOS) when not yet installed -->
 <div id="install-banner">
   <button class="close" aria-label="Close" onclick="dismissInstall()">×</button>
@@ -720,6 +892,196 @@
     localStorage.setItem('install-dismissed', '1');
     document.getElementById('install-banner').classList.remove('visible');
   }
+
+  // ───────── Voice Recorder ─────────
+  const QUEUE_KEY = 'workout-recordings-v1';
+  let mediaRecorder = null;
+  let mediaStream = null;
+  let chunks = [];
+  let recordedBlob = null;
+  let timerInterval = null;
+  let startedAt = 0;
+
+  const fab = document.getElementById('record-fab');
+  const overlay = document.getElementById('recorder-overlay');
+  const closeBtn = document.getElementById('recorder-close');
+  const micBtn = document.getElementById('mic-btn');
+  const timerEl = document.getElementById('timer');
+  const previewSection = document.getElementById('preview-section');
+  const previewAudio = document.getElementById('preview-audio');
+  const btnDiscard = document.getElementById('btn-discard');
+  const btnSave = document.getElementById('btn-save');
+  const permError = document.getElementById('perm-error');
+  const queueList = document.getElementById('queue-list');
+  const badge = document.getElementById('record-badge');
+
+  function getQueue() {
+    try { return JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]'); }
+    catch { return []; }
+  }
+  function setQueue(q) {
+    localStorage.setItem(QUEUE_KEY, JSON.stringify(q));
+    renderQueue();
+  }
+  function el(tag, opts) {
+    const e = document.createElement(tag);
+    if (opts) {
+      if (opts.text) e.textContent = opts.text;
+      if (opts.cls) e.className = opts.cls;
+      if (opts.attrs) Object.entries(opts.attrs).forEach(([k,v]) => e.setAttribute(k, v));
+    }
+    return e;
+  }
+  function renderQueue() {
+    const q = getQueue();
+    const pending = q.filter(r => !r.synced).length;
+    badge.textContent = pending > 0 ? String(pending) : '';
+
+    queueList.replaceChildren();
+    if (!q.length) {
+      const empty = el('div', { text: 'No recordings yet.', attrs: { style: 'font-size: 13px; color: var(--muted); padding: 8px 0;' } });
+      queueList.appendChild(empty);
+      return;
+    }
+    q.slice(-8).reverse().forEach(r => {
+      const item = el('div', { cls: 'queue-item' });
+      const left = el('div');
+      const ts = el('div', { text: new Date(r.ts).toLocaleString([], {dateStyle:'short', timeStyle:'short'}) });
+      const meta = el('div', { cls: 'meta', text: `${r.duration}s · ${(r.size/1024).toFixed(0)} KB` });
+      left.appendChild(ts);
+      left.appendChild(meta);
+      const status = el('span', { cls: `status ${r.synced ? 'synced' : 'pending'}`, text: r.synced ? '✓ synced' : 'pending' });
+      item.appendChild(left);
+      item.appendChild(status);
+      queueList.appendChild(item);
+    });
+  }
+
+  function openModal() { overlay.classList.add('open'); resetUI(); }
+  function closeModal() {
+    overlay.classList.remove('open');
+    if (mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+    if (mediaStream) { mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
+  }
+
+  function resetUI() {
+    micBtn.classList.remove('recording');
+    timerEl.classList.add('idle');
+    timerEl.textContent = '00:00';
+    previewSection.hidden = true;
+    permError.hidden = true;
+    recordedBlob = null;
+    chunks = [];
+    renderQueue();
+  }
+
+  function fmtTime(secs) {
+    const m = Math.floor(secs / 60).toString().padStart(2, '0');
+    const s = Math.floor(secs % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  }
+
+  function pickMime() {
+    const candidates = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg'];
+    for (const m of candidates) {
+      if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m)) return m;
+    }
+    return '';
+  }
+
+  async function startRecording() {
+    try {
+      mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (err) {
+      permError.hidden = false;
+      console.error(err);
+      return;
+    }
+    const mime = pickMime();
+    try {
+      mediaRecorder = mime ? new MediaRecorder(mediaStream, { mimeType: mime })
+                           : new MediaRecorder(mediaStream);
+    } catch (err) {
+      mediaRecorder = new MediaRecorder(mediaStream);
+    }
+    chunks = [];
+    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(chunks, { type: mediaRecorder.mimeType || 'audio/mp4' });
+      recordedBlob = blob;
+      previewAudio.src = URL.createObjectURL(blob);
+      previewSection.hidden = false;
+      micBtn.classList.remove('recording');
+      timerEl.classList.add('idle');
+      clearInterval(timerInterval);
+    };
+    mediaRecorder.start();
+    startedAt = Date.now();
+    micBtn.classList.add('recording');
+    timerEl.classList.remove('idle');
+    timerEl.textContent = '00:00';
+    previewSection.hidden = true;
+    timerInterval = setInterval(() => {
+      timerEl.textContent = fmtTime((Date.now() - startedAt) / 1000);
+    }, 200);
+  }
+
+  function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+    if (mediaStream) { mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
+  }
+
+  micBtn.addEventListener('click', () => {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      stopRecording();
+    } else {
+      startRecording();
+    }
+  });
+
+  fab.addEventListener('click', openModal);
+  closeBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  btnDiscard.addEventListener('click', () => { resetUI(); });
+
+  btnSave.addEventListener('click', async () => {
+    if (!recordedBlob) return;
+    const ts = Date.now();
+    const duration = Math.round((Date.now() - startedAt) / 1000);
+    const ext = (recordedBlob.type.includes('mp4')) ? 'm4a'
+              : (recordedBlob.type.includes('webm')) ? 'webm'
+              : (recordedBlob.type.includes('ogg')) ? 'ogg' : 'm4a';
+    const filename = `workout-${new Date(ts).toISOString().replace(/[:.]/g,'-').slice(0,19)}.${ext}`;
+    const file = new File([recordedBlob], filename, { type: recordedBlob.type });
+
+    const q = getQueue();
+    q.push({ ts, duration, size: recordedBlob.size, filename, synced: false });
+    setQueue(q);
+
+    let shared = false;
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file], title: 'Workout log', text: filename });
+        shared = true;
+      } catch (e) {
+        if (e.name !== 'AbortError') console.error(e);
+      }
+    }
+    if (!shared) {
+      const url = URL.createObjectURL(recordedBlob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    const q2 = getQueue();
+    const last = q2[q2.length - 1];
+    if (last) last.synced = true;
+    setQueue(q2);
+    resetUI();
+  });
+
+  renderQueue();
 </script>
 
 </body>
