@@ -110,7 +110,89 @@
   .bw-strip .trend.up   { color: #245a2a; font-weight: 700; }
   .bw-strip .trend.flat { color: var(--muted); font-weight: 700; }
   .bw-strip .trend.fast { color: var(--accent); font-weight: 700; }
-  .bw-strip .updated { font-size: 11px; color: var(--muted); }
+  .log-bw-btn {
+    background: var(--ink); color: white; border: none;
+    padding: 8px 14px; border-radius: 999px;
+    font-family: inherit; font-size: 12px; font-weight: 700;
+    letter-spacing: 0.04em; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .log-bw-btn:active { transform: scale(0.94); }
+  .bw-updated-row { font-size: 11px; color: var(--muted); margin-top: -10px; margin-bottom: 16px; padding-left: 16px; }
+  .bw-updated-row:empty { display: none; }
+
+  /* Phase tracker card */
+  .phase-card {
+    background: white; border: 1px solid var(--rule);
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 16px;
+  }
+  .phase-row { display: flex; justify-content: space-between; align-items: center; }
+  .phase-label { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: 4px; }
+  .phase-name { font-size: 18px; font-weight: 700; }
+  .phase-name.cut { color: var(--accent); }
+  .phase-name.maintain { color: var(--muted); }
+  .phase-name.bulk { color: var(--lower); }
+  .phase-edit-btn {
+    background: #f0ede6; color: var(--ink); border: none;
+    padding: 6px 12px; border-radius: 999px;
+    font-family: inherit; font-size: 11px; font-weight: 700;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .phase-targets {
+    margin-top: 10px; padding-top: 10px;
+    border-top: 1px solid var(--rule);
+    font-size: 13px; color: var(--ink);
+    font-variant-numeric: tabular-nums; font-weight: 600;
+  }
+
+  /* Number-pad modal */
+  .num-modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 320; display: none;
+    align-items: flex-end; justify-content: center;
+  }
+  .num-modal-overlay.open { display: flex; }
+  .num-modal {
+    background: white; width: 100%; max-width: 480px;
+    border-radius: 24px 24px 0 0;
+    padding: 22px 22px calc(22px + env(safe-area-inset-bottom)) 22px;
+    animation: slideup 0.3s ease-out;
+    position: relative;
+  }
+  .num-modal-title { font-family: "New York", Georgia, serif; font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .num-modal-hint { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+  .num-input {
+    width: 100%; font-family: inherit;
+    font-size: 32px; font-weight: 700; text-align: center;
+    padding: 16px; border-radius: 12px;
+    border: 1px solid var(--rule); background: #f7f4ec;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 14px;
+  }
+  .num-input:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
+  .num-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .num-actions button {
+    padding: 14px; border-radius: 10px; border: none;
+    font-family: inherit; font-size: 15px; font-weight: 700;
+    cursor: pointer;
+  }
+  .num-actions .cancel { background: #f0ede6; color: var(--ink); }
+  .num-actions .save   { background: var(--ink); color: white; }
+  .num-actions button:active { transform: scale(0.97); }
+
+  /* Phase modal */
+  .phase-options { display: grid; gap: 8px; margin-bottom: 14px; }
+  .phase-option {
+    background: #f7f4ec; border: 2px solid transparent;
+    padding: 14px 16px; border-radius: 12px;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+    text-align: left; font-family: inherit;
+  }
+  .phase-option.selected { border-color: var(--ink); background: white; }
+  .phase-option .opt-name { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
+  .phase-option .opt-desc { font-size: 12px; color: var(--muted); }
 
   /* Today's session card */
   .session-card {
@@ -429,8 +511,8 @@
       </div>
     </section>
 
-    <!-- BW strip -->
-    <div class="bw-strip" id="bw-strip" hidden>
+    <!-- BW strip (always visible — has log button even before any data) -->
+    <div class="bw-strip" id="bw-strip">
       <div>
         <div class="label">BODYWEIGHT</div>
         <div class="current"><span id="bw-current">—</span> <span style="font-size:13px;color:var(--muted);font-weight:400">lb</span></div>
@@ -439,7 +521,22 @@
         <div class="label">7-DAY TREND</div>
         <div class="trend" id="bw-trend">—</div>
       </div>
-      <div class="updated" id="bw-updated"></div>
+      <button class="log-bw-btn" id="log-bw-btn" aria-label="Log weight">+ Weigh</button>
+    </div>
+    <div class="updated bw-updated-row" id="bw-updated"></div>
+
+    <!-- Phase indicator -->
+    <div class="phase-card" id="phase-card">
+      <div class="phase-row">
+        <div>
+          <div class="phase-label">CURRENT PHASE</div>
+          <div class="phase-name" id="phase-name">Set your phase →</div>
+        </div>
+        <button class="phase-edit-btn" id="phase-edit-btn">Change</button>
+      </div>
+      <div class="phase-targets" id="phase-targets" hidden>
+        <span id="phase-kcal">—</span> kcal · <span id="phase-protein">—</span>g protein
+      </div>
     </div>
 
     <!-- Today's session (auto-rotated) -->
@@ -850,6 +947,45 @@
   </div>
 </div>
 
+<!-- Weight input modal -->
+<div class="num-modal-overlay" id="bw-overlay">
+  <div class="num-modal">
+    <div class="num-modal-title">Log Bodyweight</div>
+    <div class="num-modal-hint">Morning weight, after bathroom, before food. Stays consistent.</div>
+    <input type="number" inputmode="decimal" step="0.1" class="num-input" id="bw-input" placeholder="157.0" autocomplete="off">
+    <div class="num-actions">
+      <button class="cancel" id="bw-cancel">Cancel</button>
+      <button class="save" id="bw-save">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Phase modal -->
+<div class="num-modal-overlay" id="phase-overlay">
+  <div class="num-modal">
+    <div class="num-modal-title">Choose phase</div>
+    <div class="num-modal-hint">Sets daily kcal + protein target. Switch when your phase changes.</div>
+    <div class="phase-options" id="phase-options">
+      <button class="phase-option" data-phase="cut">
+        <div class="opt-name" style="color:var(--accent);">Cut · −350 kcal/day</div>
+        <div class="opt-desc">Target 1,800 kcal · 200g protein. 12-week phase. Aim −1.0 lb/wk.</div>
+      </button>
+      <button class="phase-option" data-phase="maintain">
+        <div class="opt-name" style="color:var(--muted);">Maintenance · ~2,150 kcal</div>
+        <div class="opt-desc">Whoop-driven daily target. Recomp window. BW stable ±0.25 lb/wk.</div>
+      </button>
+      <button class="phase-option" data-phase="bulk">
+        <div class="opt-name" style="color:var(--lower);">Lean Bulk · +250 kcal/day</div>
+        <div class="opt-desc">Target 2,400 kcal · 180g protein. Aim +0.4 lb/wk. Don't exceed 0.6.</div>
+      </button>
+    </div>
+    <div class="num-actions">
+      <button class="cancel" id="phase-cancel">Cancel</button>
+      <button class="save" id="phase-save">Save</button>
+    </div>
+  </div>
+</div>
+
 <!-- Install banner -->
 <div id="install-banner">
   <button class="close" aria-label="Close" onclick="dismissInstall()">×</button>
@@ -1178,6 +1314,115 @@
       setProgress('k', 0, target.kcal);
     }
   }
+
+  // ───────── Phase tracker ─────────
+  const PHASE_KEY = 'workout-phase';
+  const PHASES = {
+    cut:      { name: 'Cut',         kcal: 1800, protein: 200, cls: 'cut',      sub: 'aim −1 lb/wk' },
+    maintain: { name: 'Maintenance', kcal: 2150, protein: 175, cls: 'maintain', sub: 'recomp window' },
+    bulk:     { name: 'Lean Bulk',   kcal: 2400, protein: 180, cls: 'bulk',     sub: 'aim +0.4 lb/wk' },
+  };
+
+  function loadPhase() {
+    const phase = localStorage.getItem(PHASE_KEY);
+    const nameEl = document.getElementById('phase-name');
+    const targetsEl = document.getElementById('phase-targets');
+    if (phase && PHASES[phase]) {
+      const p = PHASES[phase];
+      nameEl.textContent = `${p.name} · ${p.sub}`;
+      nameEl.className = 'phase-name ' + p.cls;
+      document.getElementById('phase-kcal').textContent = p.kcal.toLocaleString();
+      document.getElementById('phase-protein').textContent = p.protein;
+      targetsEl.hidden = false;
+    } else {
+      nameEl.textContent = 'Set your phase →';
+      nameEl.className = 'phase-name';
+      targetsEl.hidden = true;
+    }
+  }
+  loadPhase();
+
+  const phaseEditBtn = document.getElementById('phase-edit-btn');
+  const phaseOverlay = document.getElementById('phase-overlay');
+  const phaseCancel = document.getElementById('phase-cancel');
+  const phaseSave = document.getElementById('phase-save');
+  let pendingPhase = null;
+
+  phaseEditBtn.addEventListener('click', () => {
+    const cur = localStorage.getItem(PHASE_KEY);
+    pendingPhase = cur;
+    document.querySelectorAll('.phase-option').forEach(b => {
+      b.classList.toggle('selected', b.dataset.phase === cur);
+    });
+    phaseOverlay.classList.add('open');
+  });
+  phaseCancel.addEventListener('click', () => phaseOverlay.classList.remove('open'));
+  phaseOverlay.addEventListener('click', e => { if (e.target === phaseOverlay) phaseOverlay.classList.remove('open'); });
+  document.querySelectorAll('.phase-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      pendingPhase = btn.dataset.phase;
+      document.querySelectorAll('.phase-option').forEach(b => b.classList.toggle('selected', b === btn));
+    });
+  });
+  phaseSave.addEventListener('click', () => {
+    if (pendingPhase && PHASES[pendingPhase]) {
+      localStorage.setItem(PHASE_KEY, pendingPhase);
+      loadPhase();
+    }
+    phaseOverlay.classList.remove('open');
+  });
+
+  // ───────── BW input ─────────
+  const bwBtn = document.getElementById('log-bw-btn');
+  const bwOverlay = document.getElementById('bw-overlay');
+  const bwInput = document.getElementById('bw-input');
+  const bwCancel = document.getElementById('bw-cancel');
+  const bwSave = document.getElementById('bw-save');
+
+  bwBtn.addEventListener('click', () => {
+    bwOverlay.classList.add('open');
+    setTimeout(() => bwInput.focus(), 100);
+  });
+  bwCancel.addEventListener('click', () => bwOverlay.classList.remove('open'));
+  bwOverlay.addEventListener('click', e => { if (e.target === bwOverlay) bwOverlay.classList.remove('open'); });
+
+  bwSave.addEventListener('click', async () => {
+    const val = parseFloat(bwInput.value);
+    if (!val || val < 80 || val > 400) {
+      bwInput.style.borderColor = 'var(--accent)';
+      return;
+    }
+    // 1. Update display immediately (optimistic UI)
+    document.getElementById('bw-current').textContent = val.toFixed(1);
+    document.getElementById('bw-updated').textContent = 'just logged · syncing to Mac…';
+
+    // 2. Stash locally (so trend continues even if Mac is offline)
+    const local = JSON.parse(localStorage.getItem('bw-history') || '[]');
+    local.push({ date: new Date().toISOString().slice(0,10), bw: val, ts: Date.now() });
+    localStorage.setItem('bw-history', JSON.stringify(local));
+
+    // 3. Send to Mac via iCloud Drive (JSON file the watcher will route)
+    const payload = { type: 'bodyweight', date: new Date().toISOString().slice(0,10), bw_lb: val, logged_at: new Date().toISOString() };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const filename = `bw-${new Date().toISOString().replace(/[:.]/g,'-').slice(0,19)}.json`;
+    const file = new File([blob], filename, { type: 'application/json' });
+
+    let shared = false;
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: 'Bodyweight log' }); shared = true; }
+      catch (e) { if (e.name !== 'AbortError') console.error(e); }
+    }
+    if (!shared) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    bwInput.value = '';
+    bwInput.style.borderColor = '';
+    bwOverlay.classList.remove('open');
+  });
 
   loadBriefing();
   loadLifts();
