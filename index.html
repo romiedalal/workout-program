@@ -186,6 +186,61 @@
   tr:last-child td { border-bottom: none; }
 
   /* Macros card */
+  /* Progress bars (today's macros vs target) */
+  .progress-row { margin-bottom: 12px; }
+  .progress-row:last-child { margin-bottom: 0; }
+  .progress-label {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 12px; color: var(--ink); margin-bottom: 4px;
+    font-weight: 600; letter-spacing: 0.02em;
+  }
+  .progress-num { color: var(--muted); font-variant-numeric: tabular-nums; font-weight: 400; font-size: 13px; }
+  .progress-num strong { color: var(--ink); font-weight: 700; }
+  .progress-bar {
+    height: 8px; background: #f0ede6; border-radius: 999px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 999px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+  .progress-fill.protein { background: linear-gradient(90deg, #2a6f4f, #5ada85); }
+  .progress-fill.carbs   { background: linear-gradient(90deg, #1d3557, #4d80b8); }
+  .progress-fill.fat     { background: linear-gradient(90deg, #b45309, #f59e0b); }
+  .progress-fill.kcal    { background: linear-gradient(90deg, #0a0a0a, #555); }
+  .progress-fill.over    { background: linear-gradient(90deg, #c1121f, #ff5266) !important; }
+
+  /* Logged meal card (entry the user voice-logged) */
+  .logged-meal {
+    background: white; border: 1px solid var(--rule);
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 10px;
+  }
+  .logged-meal-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .logged-meal-time { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .logged-meal-totals { font-size: 12px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .logged-items { list-style: none; margin: 0 0 8px 0; padding: 0; }
+  .logged-items li {
+    font-size: 13px; padding: 4px 0;
+    display: flex; justify-content: space-between; gap: 12px;
+    border-bottom: 1px dashed #f0ede6;
+  }
+  .logged-items li:last-child { border-bottom: none; }
+  .logged-items .item-name { color: var(--ink); }
+  .logged-items .item-amt { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .copy-carbon-btn {
+    display: block; width: 100%;
+    background: var(--diet); color: white; border: none;
+    padding: 10px; border-radius: 8px;
+    font-family: inherit; font-size: 13px; font-weight: 700;
+    letter-spacing: 0.02em; cursor: pointer;
+    margin-top: 8px;
+  }
+  .copy-carbon-btn:active { transform: scale(0.97); }
+  .copy-carbon-btn.copied { background: #2a6f4f; }
+
   .macros-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
   .macro-pill {
     background: white; border: 1px solid var(--rule); padding: 12px;
@@ -510,7 +565,34 @@
   <div class="container">
     <div class="eyebrow">Hypertrophy fuel · Science-based</div>
     <h1>Diet.</h1>
-    <p style="margin-top: 12px; color: var(--muted);">4 meals between 9:30 AM and 8:30 PM. Same plates on rotation, hit the macros, no late-night eating, no decisions.</p>
+    <p style="margin-top: 12px; color: var(--muted);">4 meals between 9:30 AM and 8:30 PM. Voice-log meals → estimated macros → Carbon-ready item list.</p>
+
+    <!-- TODAY'S PROGRESS -->
+    <h2>Today's progress</h2>
+    <div id="macros-progress" class="card">
+      <div class="progress-row">
+        <div class="progress-label"><span>Protein</span><span class="progress-num"><strong id="prog-p-cur">0</strong> / <span id="prog-p-tgt">145</span> g</span></div>
+        <div class="progress-bar"><div class="progress-fill protein" id="prog-p-fill"></div></div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label"><span>Carbs</span><span class="progress-num"><strong id="prog-c-cur">0</strong> / <span id="prog-c-tgt">300</span> g</span></div>
+        <div class="progress-bar"><div class="progress-fill carbs" id="prog-c-fill"></div></div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label"><span>Fat</span><span class="progress-num"><strong id="prog-f-cur">0</strong> / <span id="prog-f-tgt">65</span> g</span></div>
+        <div class="progress-bar"><div class="progress-fill fat" id="prog-f-fill"></div></div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label"><span>Calories</span><span class="progress-num"><strong id="prog-k-cur">0</strong> / <span id="prog-k-tgt">2,450</span> kcal</span></div>
+        <div class="progress-bar"><div class="progress-fill kcal" id="prog-k-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- TODAY'S MEALS (logged) -->
+    <h2>Today's meals</h2>
+    <div id="meals-today">
+      <div class="empty-msg">No meals logged yet. Tap the mic, switch to Meal mode, dictate what you ate.</div>
+    </div>
 
     <h2>Daily macros target</h2>
     <div class="macros-grid">
@@ -944,8 +1026,92 @@
   // ───────── Today macros (placeholder; from log.md eventually) ─────────
   // For now: zeros until macros logging is wired up. Builds visible structure.
 
+  // ───────── Today's meals + macros progress ─────────
+  function setProgress(key, current, target) {
+    document.getElementById(`prog-${key}-cur`).textContent = key === 'k' ? current.toLocaleString() : current;
+    document.getElementById(`prog-${key}-tgt`).textContent = key === 'k' ? target.toLocaleString() : target;
+    const fill = document.getElementById(`prog-${key}-fill`);
+    const pct = target > 0 ? Math.min(125, (current / target) * 100) : 0;
+    fill.style.width = `${pct}%`;
+    fill.classList.toggle('over', pct > 100);
+  }
+
+  function renderLoggedMeal(meal) {
+    const wrap = el('div', { cls: 'logged-meal' });
+
+    const head = el('div', { cls: 'logged-meal-head' });
+    const time = new Date(meal.logged_at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    head.append(el('div', { cls: 'logged-meal-time', text: time }));
+    const t = meal.totals || {};
+    const totalsStr = `${t.p||0}p · ${t.c||0}c · ${t.f||0}f · ${t.kcal||0} kcal`;
+    head.append(el('div', { cls: 'logged-meal-totals', text: totalsStr }));
+    wrap.append(head);
+
+    const ul = el('ul', { cls: 'logged-items' });
+    (meal.items || []).forEach(it => {
+      const li = el('li');
+      li.append(el('span', { cls: 'item-name', text: it.name }));
+      li.append(el('span', { cls: 'item-amt', text: it.amount || '' }));
+      ul.append(li);
+    });
+    wrap.append(ul);
+
+    const carbonText = (meal.items || []).map(it => `${it.amount || ''} ${it.name}`.trim()).join('\n');
+    const btn = el('button', { cls: 'copy-carbon-btn', text: 'Copy for Carbon' });
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(carbonText);
+        btn.textContent = '✓ Copied — paste into Carbon search';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy for Carbon'; btn.classList.remove('copied'); }, 2500);
+      } catch {
+        btn.textContent = 'Copy failed — long-press the items';
+      }
+    });
+    wrap.append(btn);
+    return wrap;
+  }
+
+  async function loadMeals() {
+    const target = { p: 145, c: 300, f: 65, kcal: 2450 };
+    const list = document.getElementById('meals-today');
+    try {
+      const r = await fetch('meals.json?t=' + Date.now(), { cache: 'no-store' });
+      if (!r.ok) throw new Error('no meals.json');
+      const data = await r.json();
+      Object.assign(target, data.target || {});
+
+      const today = new Date().toISOString().slice(0, 10);
+      const todayData = (data.days || {})[today];
+
+      if (!todayData || !todayData.meals || !todayData.meals.length) {
+        setProgress('p', 0, target.p);
+        setProgress('c', 0, target.c);
+        setProgress('f', 0, target.f);
+        setProgress('k', 0, target.kcal);
+        return;
+      }
+
+      const totals = todayData.totals || {};
+      setProgress('p', totals.p || 0, target.p);
+      setProgress('c', totals.c || 0, target.c);
+      setProgress('f', totals.f || 0, target.f);
+      setProgress('k', totals.kcal || 0, target.kcal);
+
+      list.replaceChildren();
+      todayData.meals.slice().reverse().forEach(m => list.append(renderLoggedMeal(m)));
+    } catch (e) {
+      // No meals.json yet — set zero progress, leave default empty message
+      setProgress('p', 0, target.p);
+      setProgress('c', 0, target.c);
+      setProgress('f', 0, target.f);
+      setProgress('k', 0, target.kcal);
+    }
+  }
+
   loadBriefing();
   loadLifts();
+  loadMeals();
 
   // ───────── Voice Recorder ─────────
   const QUEUE_KEY = 'workout-recordings-v1';
