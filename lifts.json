@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-05-03T21:56:49Z",
+  "updated_at": "2026-05-03T22:00:51Z",
   "bodyweight": {
     "current": 156.0,
-    "current_date": "2026-04-29",
+    "current_date": "2026-05-03",
     "trend_7d": 1.0,
-    "samples": 2
+    "samples": 3
   },
   "lifts": {
     "Bench Press": {
@@ -17,11 +17,11 @@
         1,
         2
       ],
-      "history_count": 3,
+      "history_count": 4,
       "next_target": "Hold 135 lb. Match or beat 5 reps top set RIR 1-2.",
       "last_session": {
-        "date": "2026-04-29",
-        "top_set": "135 \u00d7 5/5/5/4",
+        "date": "2026-05-03",
+        "top_set": "135 \u00d7 5/5/5",
         "rir": 2,
         "sets": [
           [
@@ -35,10 +35,6 @@
           [
             135.0,
             5
-          ],
-          [
-            135.0,
-            4
           ]
         ]
       }
@@ -53,10 +49,10 @@
         1,
         1
       ],
-      "history_count": 3,
+      "history_count": 4,
       "next_target": "Hold 10 lb. Aim 9+ reps top set RIR 1.",
       "last_session": {
-        "date": "2026-04-29",
+        "date": "2026-05-03",
         "top_set": "10 \u00d7 8/7/7/6",
         "rir": 1,
         "sets": [
