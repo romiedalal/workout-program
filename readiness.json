@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-02T03:00:04.346968Z",
+  "updated_at": "2026-06-02T15:00:01.798061Z",
   "recovery": {
     "score": 60.0,
     "call": "cap_intensity",
@@ -13,8 +13,8 @@
     "hours": 4.6
   },
   "strain": {
-    "day_strain": 0.24521935,
-    "day_kcal": 593
+    "day_strain": 0.25072294,
+    "day_kcal": 598
   },
   "nutrition": {
     "kcal_target": 650,
