@@ -1,11 +1,11 @@
 {
-  "updated_at": "2026-07-10T03:00:19.911359Z",
+  "updated_at": "2026-07-10T15:00:16.206163Z",
   "recovery": {
     "score": 70.0,
     "call": "train_as_planned",
     "hrv_ms": 92.796875,
-    "hrv_avg_7d": 84.0,
-    "hrv_trend_pct": 10.5,
+    "hrv_avg_7d": 84.2,
+    "hrv_trend_pct": 10.2,
     "rhr_bpm": 58.0
   },
   "sleep": {
@@ -13,11 +13,11 @@
     "hours": 8.4
   },
   "strain": {
-    "day_strain": 13.666524,
-    "day_kcal": 2848
+    "day_strain": 5.6211286,
+    "day_kcal": 1590
   },
   "nutrition": {
-    "kcal_target": 3150,
+    "kcal_target": 1750,
     "kcal_method": "yesterday_strain \u00d7 1.10"
   },
   "workouts_7d_count": 13
