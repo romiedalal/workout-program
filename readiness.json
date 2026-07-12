@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-12T03:00:05.277623Z",
+  "updated_at": "2026-07-12T15:00:01.790170Z",
   "recovery": {
     "score": 89.0,
     "call": "train_as_planned",
@@ -13,12 +13,12 @@
     "hours": 6.9
   },
   "strain": {
-    "day_strain": 5.402626,
-    "day_kcal": 1416
+    "day_strain": 5.4075994,
+    "day_kcal": 2267
   },
   "nutrition": {
-    "kcal_target": 1550,
+    "kcal_target": 2500,
     "kcal_method": "yesterday_strain \u00d7 1.10"
   },
-  "workouts_7d_count": 9
+  "workouts_7d_count": 8
 }
