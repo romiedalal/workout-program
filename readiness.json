@@ -1,11 +1,11 @@
 {
-  "updated_at": "2026-07-14T15:00:06.094091Z",
+  "updated_at": "2026-07-15T03:00:05.938395Z",
   "recovery": {
     "score": 66.0,
     "call": "cap_intensity",
     "hrv_ms": 80.263596,
-    "hrv_avg_7d": 88.8,
-    "hrv_trend_pct": -9.6,
+    "hrv_avg_7d": 85.9,
+    "hrv_trend_pct": -6.6,
     "rhr_bpm": 60.0
   },
   "sleep": {
